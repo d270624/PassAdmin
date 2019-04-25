@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ pwds.host }}</title>
+    <link rel="icon" href="/static/images/favicon.ico"/>
+    <link rel="stylesheet" href="/static/xterm/xterm.css"/>
+    <link rel="stylesheet" href="/static/xterm/style.css"/>
+</head>
+<body>
+
+<div id="django-webssh-terminal">
+    {% csrf_token %}
+    <div id="terminal"></div>
+</div>
+<script>
+    window.onload = function post_data() {
+        var csrf = $("[name='csrfmiddlewaretoken']").val();
+        var host = "{{ pwds.host }}";
+        var port = "{{ pwds.port }}";
+        var user = "{{ pwds.user }}";
+        var auth = "pwd";
+        var pwd = "{{ pwds.password }}";
+        var password = window.btoa(pwd);
+        var data = {
+            'host': host,
+            'port': port,
+            'user': user,
+            'auth': auth,
+            'password': password,
+        };
+        var unique = null;
+
+        if (auth === 'key') {
+            var pkey = $('#pkey')[0].files[0];
+            var formData = new FormData();
+            formData.append('pkey', pkey);
+            formData.append('data', JSON.stringify(data));
+            formData.append('csrfmiddlewaretoken', csrf);
+
+            $.ajax({
+                url: "/webssh/" +"{{uid}}",
+                type: "post",
+                data: formData,
+                async: false,
+                contentType: false,
+                processData: false,
+                mimeType: 'multipart/form-data',
+                success: function (result) {
+                    var obj = JSON.parse(result);
+                    var code = obj.code;
+                    if (code === 0) {
+                        unique = obj.message;
+                    } else {
+                        var error = obj.error;
+                        try {
+                            var error_obj = JSON.parse(error);
+                            Object.keys(error_obj).forEach(function (key) {
+                                var error_info = 'field: ' + key + ' ' + error_obj[key][0].message;
+                                $('#' + key).after(' ' + '<span style="color: red">' + error_info + '</span>');
+                            })
+                        } catch (e) {
+                            alert(error);
+                        }
+                    }
+                }
+            })
+        } else {
+            $.ajax({
+                url: "/webssh/"+"{{uid}}",
+                type: "post",
+                data: {'data': JSON.stringify(data), 'csrfmiddlewaretoken': csrf},
+                async: false,
+                success: function (result) {
+                    var obj = result;
+                    var code = obj.code;
+                    if (code === 0) {
+                        unique = obj.message;
+                    } else {
+                        var error = obj.error;
+                        try {
+                            var error_obj = JSON.parse(error);
+                            Object.keys(error_obj).forEach(function (key) {
+                                var error_info = 'field: ' + key + ' ' + error_obj[key][0].message;
+                                $('#' + key).after(' ' + '<span style="color: red">' + error_info + '</span>');
+                            })
+                        } catch (e) {
+                            alert(error);
+                        }
+                    }
+                }
+            })
+        }
+
+        if (unique !== null) {
+            webssh(unique)
+        }
+    }
+
+</script>
+<script src="/static/jquery.min.js"></script>
+<script src="/static/xterm/xterm.js"></script>
+<script src="/static/webssh.js"></script>
+</body>
+</html>

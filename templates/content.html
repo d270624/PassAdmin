@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta content="" name="description"/>
+    <meta content="webthemez" name="author"/>
+    <title>服务器信息管理系统</title>
+    <!-- Bootstrap Styles-->
+    <link href="/static/assets/css/bootstrap.css" rel="stylesheet"/>
+    <!-- FontAwesome Styles-->
+    <link href="/static/assets/css/font-awesome.css" rel="stylesheet"/>
+    <link href="/static/assets/css/select2.min.css" rel="stylesheet">
+    <link href="/static/assets/css/checkbox3.min.css" rel="stylesheet">
+    <!-- Custom Styles-->
+    <link href="/static/assets/css/custom-styles.css" rel="stylesheet"/>
+    <!-- Google Fonts-->
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'/>
+    <!-- TABLE STYLES-->
+    <link href="/static/assets/js/dataTables/dataTables.bootstrap.css" rel="stylesheet"/>
+    <link href="/static/assets/css/bootstrap-table.min.css" rel="stylesheet">
+    <link rel="shortcut icon" href="/static/images/favicon.ico">
+</head>
+<body>
+<div id="wrapper">
+    <nav class="navbar navbar-default top-navbar" role="navigation">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".sidebar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/index/"><strong><i class="icon fa fa-plane"></i> 服务器管理系统</strong></a>
+            <div id="sideNav" href="">
+            </div>
+        </div>
+        <ul class="nav navbar-top-links navbar-right">
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
+                    <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
+                </a>
+                <ul class="dropdown-menu dropdown-user">
+                    <li><a href="#"><i class="fa fa-user fa-fw"></i> 用户：{{ sess }}</a>
+                    </li>
+                    <li><a data-toggle="modal" href="#password" data-target="#password"><i class="fa fa-gear fa-fw"></i>
+                        修改密码</a>
+                    </li>
+                    <li class="divider"></li>
+                    <li><a href="/out/"><i class="fa fa-sign-out fa-fw"></i> 退出</a>
+                    </li>
+                </ul>
+                <!-- /.dropdown-user -->
+            </li>
+        </ul>
+    </nav>
+    <!--/. NAV TOP  -->
+    <nav class="navbar-default navbar-side" role="navigation">
+        <div class="sidebar-collapse">
+            <ul class="nav" id="main-menu">
+                {#                {% block active %}{% endblock %}#}
+
+
+                <li>
+                    <a href="{% url 'index' %}" id="showServer"><i class="fa fa-table"></i> 服务器记录</a>
+                </li>
+                {% if auth == 1 %}
+                    <li>
+                        <a href="{% url 'add' %}" id="addServer"><i class="fa fa-edit"></i> 添加服务器 </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'hard' %}" id="hardware"><i class="fa fa-sitemap"></i> 服务器硬件详情 </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'shell' %}" id="batch"><i class="fa fa-desktop"></i> 批量执行命令 </a>
+                    </li>
+                {% endif %}
+                <li>
+                    <a href="{% url 'project' %}" id="project"><i class="glyphicon glyphicon-th-large"></i> 项目部署 </a>
+                </li>
+                <li>
+                    <a href="{% url 'edit_project' %}" id="edit_project"><i class="glyphicon glyphicon-edit"></i> 编辑模板 </a>
+                </li>
+                <li>
+                    <a href="{% url 'queue' %}" id="task"><i class="glyphicon glyphicon-tasks"></i> 任务队列 </a>
+                </li>
+                <li>
+                    <a href="{% url 'tools' %}" id="samllTools"><i class="glyphicon glyphicon-wrench"></i> 小工具 </a>
+                </li>
+                <li>
+                    <a href="{% url 'showDatabase' %}" id="database"><i class="glyphicon glyphicon-hdd"></i> 数据库记录
+                    </a>
+                </li>
+                <li>
+                    <object type="application/x-shockwave-flash" style="outline:none;"
+                            data="http://cdn.abowman.com/widgets/hamster/hamster.swf?" width="260" height="194">
+                        <param name="movie" value="http://cdn.abowman.com/widgets/hamster/hamster.swf?"></param>
+                        <param name="AllowScriptAccess" value="always"></param>
+                        <param name="wmode" value="opaque"></param>
+                    </object>
+                </li>
+
+            </ul>
+
+        </div>
+
+    </nav>
+    {% block h %}{% endblock %}
+</div>
+<div class="modal fade" id="password" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" style="width: 300px; ">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">修改密码</h4>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <input id="ymm" type="password" class="form-control" style="width: 80%" placeholder="原密码">
+                </div>
+                <br>
+                <div>
+                    <input id="nmm" type="password" class="form-control" style="width: 80%" placeholder="新密码">
+                </div>
+                <br>
+                <div>
+                    <input id="cmm" type="password" class="form-control" style="width: 80%" placeholder="重复密码">
+                </div>
+                <br>
+                <p id="pst" style="color: #c20006"></p>
+                <div>
+                    <button id="chpwd" class="btn btn-default" style="margin-left: 32%;">
+                        修改密码
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% block js %}{% endblock %}
+</body>
+<script>
+    $('#chpwd').click(function () {
+        var y = $('#ymm').val();
+        var n = $('#nmm').val();
+        var c = $('#cmm').val();
+        $.ajax(
+            {
+                url: '/ed_pwd/',
+                data: {'y': y, 'n': n, 'c': c, 'user': '{{ sess }}'},
+                type: 'post',
+                dataType: 'json',
+                async: 'true',
+                success: function (data) {
+                    if (data.status == "len") {
+                        $('#pst').text('新密码长度不足8位');
+                    } else if (data.status == "error") {
+                        $('#pst').text('原密码不正确，请重新输入');
+                    } else if (data.status == "OK") {
+                        $('#pst').text('密码修改成功');
+                    } else if (data.status == "len2") {
+                        $('#pst').text('两次输入密码不一致，请重新输入');
+                    }
+                },
+                error: function (status, error) {
+                    console.log('未知错误');
+                }
+            }
+        )
+    });
+</script>
+
+{#<label>#}
+{#    <input type="text" style="width: 0; height:0;border:#24a9a9">#}
+{#    <input type="password" style="width: 0; height:0;border:#24a9a9">#}
+{#</label>#}
+</html>

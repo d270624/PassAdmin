@@ -1,0 +1,142 @@
+﻿{% extends 'content.html' %}
+{% block h %}
+    <div id="page-wrapper">
+        <div class="header">
+            <h3 class="page-header">
+                项目模板
+            </h3>
+        </div>
+
+        <div class="col-xs-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="card-title">
+                        <div class="title">编辑模板</div>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div>
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered table-hover" id="dataTables-example">
+                                <thead>
+                                <tr>
+                                    <th>项目名称</th>
+                                    <th>日志路径</th>
+                                    <th>执行语句</th>
+                                    <th>操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for x in value %}
+                                    <tr class="even gradeC">
+                                        <td>{{ x.obj_name }}</td>
+                                        <td>{{ x.obj_log }}</td>
+                                        <td>
+                                            <pre style="word-wrap: break-word; table-layout: fixed; width: 100%">{{ x.obj_text }}</pre>
+                                        </td>
+                                        <td>
+                                            <button id="edit" value="{{ x.uid }}" onclick="edit({{ x.uid }})"
+                                                    style="color:#fff;background-color:#409eff;border-color:#409eff;border-style:solid">
+                                                修改
+                                            </button>
+                                            <button onclick="if (confirm('确定要删除吗？')) {window.location.href='{% url 'obj_del' x.uid %}'}"
+                                                    style="color:#fff;background-color:#c20003;border-color:#c20006;border-style:solid">
+                                                删除
+                                            </button>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <form id="fom" action="{% url 'edit_project' %}" method="post" class="form-horizontal">
+                            {% csrf_token %}
+                            <div class="sub-title" style="margin-left: 0%">项目名称:</div>
+                            <div>
+                                {{ form.obj_name }}
+                            </div>
+                            <div class="sub-title" style="margin-left: 0%">日志路径:</div>
+                            <div>
+                                {{ form.obj_log }}
+                            </div>
+                            <div class="sub-title" style="margin-left: 0%">执行语句:</div>
+                            <div>
+                                {{ form.obj_text }}
+                            </div>
+                            <p hidden id="uid"></p>
+                            <br>
+                            <p style="color: red;" id="mes"></p>
+                            <button id="btn" type="submit" style="margin-left: 0%;" class="btn btn-default">添加</button>
+                        </form>
+                        <div hidden id="ediv">
+                            <button id="ebtn" class="btn btn-default" style="margin-left: 12%;">修改</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
+{% block js %}
+    <script src="/static/assets/js/jquery-1.10.2.js"></script>
+    <script>
+        function edit(uid) {
+            $.ajax(
+                {
+                    url: '/obj_update/',
+                    data: {'uid': uid},
+                    type: 'post',
+                    dataType: 'json',
+                    async: 'true',
+                    success: function (data) {
+                        $('#id_obj_name').val(data['obj_name']);
+                        $('#id_obj_log').val(data['obj_log']);
+                        $('#id_obj_text').val(data['obj_text']);
+                        $('#uid').val(uid);
+                        $('#btn').hide();
+                        $('#ediv').show();
+                    },
+                    error: function (xhr, error) {
+                        console.log('失败');
+                        console.log(error);
+                    }
+                }
+            )
+        }
+
+        $(function () {
+            var ebtn = $('#ebtn');
+            ebtn.click(function () {
+                var name = $('#id_obj_name').val();
+                var log = $('#id_obj_log').val();
+                var text = $('#id_obj_text').val();
+                var uid = $('#uid').val();
+                $.ajax(
+                    {
+                        url: '/obj_hd/',
+                        data: {'obj_name': name, 'obj_text': text, 'uid': uid, 'obj_log': log},
+                        type: 'post',
+                        dataType: 'json',
+                        async: 'true',
+                        success: function (data) {
+                            alert("恭喜你，修改成功")
+                            window.location.reload();
+                        },
+                        error: function (xhr, error) {
+                            $('#mes').text("修改失败")
+                        }
+                    }
+                )
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('#id_obj_log').css("width", "20.5%");
+            $('#edit_project').attr('class','active-menu')
+        })
+
+    </script>
+{% endblock %}

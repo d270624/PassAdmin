@@ -1,0 +1,111 @@
+﻿{% extends 'content.html' %}
+{% block h %}
+    <div id="page-wrapper">
+        <div class="header">
+            <h3 class="page-header">
+                项目部署
+            </h3>
+        </div>
+        <div id="panel panel-default">
+            <div class="col-md-12">
+                <!-- Advanced Tables -->
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <div>
+                                <table id="table" class="table table-striped table-bordered table-hover">
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 工具容器 -->
+    <div id="toolbar" class="btn-group">
+        <button id="btn_delete" type="button" class="btn btn-default" onclick='window.location.href="http://127.0.0.1:8000/admin/"'>
+            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>新增
+        </button>
+    </div>
+
+    <!--项目部署弹框 -->
+    <div class="modal fade" id="pro" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;
+                    </button>
+                    <h4 class="modal-title" id="pro_title"></h4>
+                </div>
+                <div class="modal-body">
+                    <div class="title">1. 点击选择文件，选中要部署的代码程序</div>
+                    <input id="obj_up" type="file" name="myfile" style="margin-left:0%">
+                    <br>
+                    <div class="title">2. 是否是定时任务:</div>
+                    <div class="radio3 radio-check radio-success radio-inline">
+                        <input type="radio" id="radio5" name="radio2" value="是" onclick="radio5()">
+                        <label for="radio5">
+                            是
+                        </label>
+                    </div>
+                    <div class="radio3 radio-check radio-inline">
+                        <input type="radio" id="radio4" name="radio2" value="否" checked="" onclick="radio4()">
+                        <label for="radio4">
+                            否
+                        </label>
+                    </div>
+                    <div hidden class="title" id="dv4">* 计划任务名称:<br><br></div>
+                    <div hidden id="dv2"><input id="qname" type="text" class="form-control" placeholder="起个名字吧"><br>
+                    </div>
+                    <div hidden class="title" id="dv3">* 请输入执行时间:<br></div>
+                    <div hidden id="dv1"><input id="time" type="datetime-local" class="form-control"
+                                                style="width: 40%"/></div>
+                    <br>
+                    <br>
+                    <div class="title">3. 点击开始部署:</div>
+                    <button id="pro_btn"
+                            style="color:#fff;background-color:#6078c2;border-color:#6078c2;border-style:solid">
+                        开始部署
+                    </button>
+                    <button hidden id="q_btn" onclick="location.href=/queue/"
+                            style="color:#fff;margin-left:62%;background-color:#6078c2;border-color:#6078c2;border-style:solid">
+                        查看任务列表
+                    </button>
+                    <br>
+                    <br>
+                    <div class="title">返回日志：</div>
+                    <div>
+                            <textarea id="log" class="form-control" rows="3"
+                                      style="width: 100%;height: 300px;color: #05a3ff;background-color:#1b1b1b;"></textarea>
+                    </div>
+                    <input hidden value="" id="host_id">
+                    <input hidden value="" id="temp_id">
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+{% block js %}
+    <script src="/static/assets/js/jquery-1.10.2.js"></script>
+    <script src="/static/assets/js/bootstrap.min.js"></script>
+    <script src="/static/js/project.js"></script>
+    <script src="/static/js/custom.js"></script>
+    <script src="/static/assets/js/jquery.metisMenu.js"></script>
+    <script src="/static/assets/js/dataTables/bootstrap-table.js"></script>
+    <script type="text/javascript" src="/static/js/jquery-ui.js"></script>
+    <script>
+        $(function () {
+            $('#myModal').on('hide.bs.modal', function () {
+                location.reload();
+            })
+        });
+        $(document).ready(function () {
+            $('#project').attr('class', 'active-menu');
+            projectTable();
+            $('#pro').draggable();//设置可以拖动
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,212 @@
+{% extends 'content.html' %}
+{% block h %}
+    <!-- /. NAV SIDE  -->
+    <div id="page-wrapper">
+        <div class="header">
+            <h3 class="page-header">
+                服务器信息
+            </h3>
+        </div>
+        <div id="panel panel-default">
+            <div class="col-md-12">
+                <!-- Advanced Tables -->
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <div>
+                                <table id="table" class="table table-striped table-bordered table-hover">
+                                </table>
+                            </div>
+                        </div>
+                        <div style="font-size: 14px;color: #c21743">Xshell连接与Xftp上传文件说明：<br>
+                            1.下载xshell.reg文件<br>
+                            2.编辑并修改安装目录为自己的Xshell和Xftp的安装路径<br>
+                            3.双击运行添加到注册表，刷新网页点击Xshell连接<br>
+                            4.只对Windows系统有效<br>
+                            <a href="/down_handler/">点击下载</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--上传文件弹窗 -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel"></h4>
+                </div>
+                <div class="modal-body">
+                    <input id="up" type="file" name="myfile" style="margin-left:0%">
+                    <p class="help-block" style="margin-left:0%">选择文件后点击开始上传</p>
+                    <p id="status" style="color: #c20006"></p>
+                    <p hidden id="progressbar"></p>
+                    <input hidden value="" id="uid2">
+                    <button id="upbutton"
+                            style="color:#fff;background-color:#6078c2;border-color:#6078c2;border-style:solid">
+                        开始上传
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--下载文件弹窗 -->
+    <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">下载文件</h4>
+                </div>
+                <div class="modal-body">
+                    <input id="file_path" type="text" class="form-control" style="width: 50%">
+                    <input hidden value="" id="uid">
+                    <p class="help-block" style="margin-left:0%">输入文件路径后点击开始下载</p>
+                    <button id="download"
+                            style="color:#fff;background-color:#6078c2;border-color:#6078c2;border-style:solid">
+                        开始下载
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--项目部署弹框 -->
+    <div class="modal fade" id="myModal3" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel3"></h4>
+                </div>
+                <div class="modal-body">
+                    <div class="title">1. 点击选择文件，选中要部署的代码程序</div>
+                    <input id="obj_up" type="file" name="myfile" style="margin-left:0%">
+                    <br>
+                    <div>
+                        <div class="title">2. 选择模板(包名与模板名要保持一致)：</div>
+                        <select class="select-control" id="select">
+                            {% for x in value %}
+                                <option value="{{ x.uid }}">{{ x.obj_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <br>
+                    <div class="title">3. 是否是定时任务:</div>
+                    <div class="radio3 radio-check radio-success radio-inline">
+                        <input type="radio" id="radio5" name="radio2" value="是" onclick="radio5()">
+                        <label for="radio5">
+                            是
+                        </label>
+                    </div>
+                    <div class="radio3 radio-check radio-inline">
+                        <input type="radio" id="radio4" name="radio2" value="否" checked="" onclick="radio4()">
+                        <label for="radio4">
+                            否
+                        </label>
+                    </div>
+                    <div hidden class="title" id="dv4">* 计划任务名称:<br><br></div>
+                    <div hidden id="dv2"><input id="qname" type="text" class="form-control" placeholder="起个名字吧"><br>
+                    </div>
+                    <div hidden class="title" id="dv3">* 请输入执行时间:<br></div>
+                    <div hidden id="dv1"><input id="time" type="datetime-local" class="form-control"
+                                                style="width: 40%"/></div>
+                    <br>
+                    <br>
+                    <div class="title">4. 点击开始部署:</div>
+                    <button id="obj_btn"
+                            style="color:#fff;background-color:#6078c2;border-color:#6078c2;border-style:solid">
+                        开始部署
+                    </button>
+                    <button hidden id="q_btn" onclick="location.href=/queue/"
+                            style="color:#fff;margin-left:62%;background-color:#6078c2;border-color:#6078c2;border-style:solid">
+                        查看任务列表
+                    </button>
+                    <br>
+                    <br>
+                    <div class="title">返回日志：</div>
+                    <div>
+                            <textarea id="log" class="form-control" rows="3"
+                                      style="width: 100%;height: 300px;color: #05a3ff;background-color:#1b1b1b;"></textarea>
+                    </div>
+                    <input hidden value="" id="uid3">
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--备注弹框 -->
+    <div class="modal fade" id="myModal4" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" id="mod">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel4"></h4>
+                </div>
+                <div class="modal-body">
+                    <input id="remark_i" type="text" class="form-control" style="width: 50%">
+                    <input hidden value="" id="uid4">
+                    <input hidden value="" id="uid5">
+                    <p class="help-block" style="margin-left:0%">请输入备注信息</p>
+                    <p id="remark_s" style="color: #c20006"></p>
+                    <button id="remark_b"
+                            style="color:#fff;background-color:#6078c2;border-color:#6078c2;border-style:solid">
+                        保存
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 工具容器 -->
+
+    <div id="toolbar" class="btn-group">
+        <ul class="nav nav-tabs">
+{#            {% if auth == 1 %}#}
+{#                <li><a href="javascript:void(0);"#}
+{#                       onclick="if (confirm('确定要重置密码吗？')) {window.location.href='{% url 'change_pwd' %}'}">修改所有机器密码</a>#}
+{#                </li>#}
+{#            {% endif %}#}
+            <li class="active"><a href="/index/">所有机器</a></li>
+        </ul>
+    </div>
+
+
+{% endblock %}
+{% block js %}
+    <script src="/static/assets/js/jquery-1.10.2.js"></script>
+    <!-- Bootstrap Js -->
+    <script src="/static/assets/js/bootstrap.min.js"></script>
+    <!-- Metis Menu Js -->
+    <script src="/static/assets/js/jquery.metisMenu.js"></script>
+    <!-- DATA TABLE SCRIPTS -->
+    <script src="/static/assets/js/dataTables/jquery.dataTables.js"></script>
+    <script src="/static/assets/js/dataTables/dataTables.bootstrap.js"></script>
+    <script src="/static/assets/js/dataTables/bootstrap-table.js"></script>
+    <script type="text/javascript" src="/static/js/jquery-ui.js"></script>
+    <!-- Custom Js -->
+    <script src="/static/css/style.js"></script>
+    <script src="/static/js/custom.js"></script>
+    <link href="/static/css/style1.css" rel="stylesheet"/>
+    <script>
+        $(document).ready(function () {
+            $('#showServer').attr('class', 'active-menu');
+            $.ajaxSetup({
+                data: {csrfmiddlewaretoken: '{{ csrf_token }}'},
+            });
+            IndexTable("all");
+            $('#dataTables-example').dataTable();
+            $("[placeholder='Search']").attr("value", "ALL");
+            $('#myModal3').draggable();//设置可以拖动
+
+        });
+    </script>
+{% endblock %}
+

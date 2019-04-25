@@ -1,0 +1,112 @@
+﻿{% extends 'content.html' %}
+{% block h %}
+    <div id="page-wrapper">
+        <div class="header">
+            <h3 class="page-header">
+                添加服务器
+            </h3>
+        </div>
+        <div class="col-xs-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="card-title">
+                        <div class="title">详细信息</div>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <form action="{% url 'update' value.uid %}" method="post" class="form-horizontal">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="inputEmail3" class="col-sm-2 control-label">服务器名:</label>
+                            <div class="col-sm-10">
+                                {{ form.hostname }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputEmail3" class="col-sm-2 control-label">系统:</label>
+                            <div class="col-sm-10">
+                                {{ form.system }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputEmail3" class="col-sm-2 control-label">外网IP:</label>
+                            <div class="col-sm-10">
+                                {{ form.ip }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputEmail3" class="col-sm-2 control-label">内网IP:</label>
+                            <div class="col-sm-10">
+                                {{ form.intranet_ip }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputEmail3" class="col-sm-2 control-label">Root账号:</label>
+                            <div class="col-sm-10">
+                                {{ form.user }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputEmail3" class="col-sm-2 control-label">Root密码:</label>
+                            <div class="col-sm-10">
+                                {{ form.password }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputEmail3" class="col-sm-2 control-label">用户:</label>
+                            <div class="col-sm-10">
+                                {{ form.normal_user }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputEmail3" class="col-sm-2 control-label">密码:</label>
+                            <div class="col-sm-10">
+                                {{ form.normal_pwd }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputEmail3" class="col-sm-2 control-label">端口:</label>
+                            <div class="col-sm-10">
+                                {{ form.port }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputEmail3" class="col-sm-2 control-label">分组:</label>
+                            <div class="col-sm-10">
+                                {{ form.user_group }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-50 col-sm-10">
+                                <button type="submit" style="margin-left: 0%;" class="btn btn-default">修改</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div style="color:red" class="col-sm-offset-50 col-sm-10">
+                                <p style="color: red;">{{ mes }}</p>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block js %}
+    <script src="/static/assets/js/jquery-1.10.2.js"></script>
+    <!-- Bootstrap Js -->
+    <script src="/static/assets/js/bootstrap.min.js"></script>
+    <!-- Metis Menu Js -->
+    <script src="/static/assets/js/jquery.metisMenu.js"></script>
+    <!-- DATA TABLE SCRIPTS -->
+    <script src="/static/assets/js/dataTables/jquery.dataTables.js"></script>
+    <script src="/static/assets/js/dataTables/dataTables.bootstrap.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#addServer').attr('class', 'active-menu');
+            $('#dataTables-example').dataTable();
+        });
+    </script>
+    <!-- Custom Js -->
+    <script src="/static/assets/js/custom-scripts.js"></script>
+{% endblock %}

@@ -1,0 +1,85 @@
+﻿{% extends 'content.html' %}
+{% block h %}
+    <div id="page-wrapper">
+        <div class="header">
+            <h3 class="page-header">
+                小工具
+            </h3>
+        </div>
+        <div id="page-inner">
+
+            <div class="row">
+                <div class="col-md-4 col-sm-4">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading"><i class="glyphicon glyphicon-wrench"></i>
+                            端口检测
+                        </div>
+                        <div class="panel-body">
+                            <p>这是一个可以用于端口检测的工具</p>
+                        </div>
+                        <div class="panel-footer" style="">
+                            <a data-toggle="modal" href="#port" data-target="#port"><i
+                                    class="glyphicon glyphicon-chevron-right"></i> 使用</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-4">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading"><i class="glyphicon glyphicon-wrench"></i>
+                            ping检测
+                        </div>
+                        <div class="panel-body">
+                            <p>这是一个检测连接性的工具</p>
+                        </div>
+                        <div class="panel-footer" style="">
+                            <a href="http://ping.chinaz.com/"><i class="glyphicon glyphicon-chevron-right"></i> 使用</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="modal fade" id="port" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog" style="width: 220px">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel">端口检测</h4>
+                    </div>
+                    <div class="modal-body">
+                        <h4 class="modal-title">IP：</h4>
+                        <label>
+                            <input class="form-control" type="text" id="port_ip">
+                        </label>
+                        <h4 class="modal-title">端口：</h4>
+                        <label>
+                            <input class="form-control" type="number" min="0" max="65535" id="port_p"/>
+                        </label>
+                        <br>
+                        <button class="btn btn-default" id="port_btn"
+                                style="margin-top:15px;margin-left: 60px;color:#fff;background-color:#2caef5;border-color:#2caef5;border-style:solid">
+                            开始
+                        </button>
+                        <h4 hidden class="modal-title" id="status" style="color: #ff0006">检测结果：</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script src="/static/assets/js/jquery-1.10.2.js"></script>
+    <script src="/static/assets/js/bootstrap.min.js"></script>
+    <script src="/static/js/tools.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#samllTools').attr('class', 'active-menu')
+        });
+    </script>
+{% endblock %}

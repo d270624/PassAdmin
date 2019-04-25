@@ -1,0 +1,48 @@
+#div1 {
+    width: 45px;
+    height: 25px;
+    border-radius: 50px;
+    position: relative;
+}
+
+#div2 {
+    width: 20px;
+    height: 20px;
+    border-radius: 48px;
+    position: absolute;
+    background: white;
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.4);
+}
+
+#span1 {
+    margin: 22px 10px 1px 86.7%;
+    font-size: 14px;
+    width: 45px;
+    height: 25px;
+
+}
+
+.open1 {
+    display: inline-block;
+    background: rgba(14, 28, 184, 0.8);
+    margin-bottom: -5px;
+}
+
+.open2 {
+    top: 2px;
+    right: 1px;
+}
+
+.close1 {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.4);
+    border: 2px solid rgba(0, 0, 0, 0.1);
+    border-left: transparent;
+    margin-bottom: -5px;
+}
+
+.close2 {
+    left: 0px;
+    top: 0px;
+    border: 2px solid rgba(0, 0, 0, 0.1);
+}
