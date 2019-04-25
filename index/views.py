@@ -1311,6 +1311,7 @@ def addDatabase(request):
         return HttpResponseRedirect('/login/')
 
 
+# 修改数据库
 def updateDatabase(request):
     sess = request.session.get('user')
     if sess:
