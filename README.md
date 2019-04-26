@@ -4,8 +4,9 @@
 ### 1.安装python环境
 
 #### 安装EPEL和IUS软件源
-yum install epel-release -y
-yum install https://centos7.iuscommunity.org/ius-release.rpm -y
+
+  yum install epel-release -y
+  yum install https://centos7.iuscommunity.org/ius-release.rpm -y
 
 ####  安装Python3.6
 yum install python36u -y
