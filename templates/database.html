@@ -84,7 +84,7 @@
                                     {{ form.remark }}
                                 </label>
                                 <label hidden>
-                                    <input type="text" name="uid" id="id_uid" placeholder="选填" class="form-control" >
+                                    <input type="text" name="uid" id="id_uid" placeholder="选填" class="form-control">
                                 </label>
                                 <button class="btn btn-default" type="submit" id="id_btn"
                                         style="margin-top:15px;margin-left: 60px;color:#fff;background-color:#2caef5;border-color:#2caef5;border-style:solid">
@@ -111,6 +111,7 @@
         $(document).ready(function () {
             $('#database').attr('class', 'active-menu');
             dataBaseTable();
+            $("[placeholder='Search']").attr("AUTOCOMPLETE", "off");
             $("[placeholder='Search']").attr("value", "ALL");
         });
     </script>

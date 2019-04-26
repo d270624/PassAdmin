@@ -204,7 +204,8 @@ class Users(models.Model):  # 添加用户类
     uid = models.AutoField(primary_key=True)
     user = models.CharField(max_length=30, unique=True)  # 唯一索引
     password = models.CharField(max_length=30)
-    user_group = models.ForeignKey(UsersGroup, null=True, on_delete=models.CASCADE, verbose_name='用户分组')  # 一对多
+    user_group = models.ForeignKey(UsersGroup, null=True, on_delete=models.CASCADE, verbose_name='用户分组',
+                                   blank=True)  # 一对多
     remark = models.ManyToManyField(remarks, verbose_name='备注信息', blank=True)  # 多对多
 
     def __str__(self):

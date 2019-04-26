@@ -66,27 +66,22 @@ def login(request):
                 return render(request, 'login.html', locals())
     else:
         form = LoginForm(request.POST)
-        if form.is_valid():
-            cd = form.cleaned_data
-            user = cd['user']
-            pwd = cd['password']
-            users = Users.objects.filter(user=user)
-            if users:
-                u = users[0]
-                if pwd == u.password:
-                    request.session['user'] = user
-                    request.session.set_expiry(0)  # 设置session过期时间为关闭浏览器
-                    resp = HttpResponseRedirect('/index/')  # 跳到首页
-                    resp.set_cookie('user', user, 60 * 60 * 24 * 7)  # 设置cookies过期时间为7天
-                    return resp
-                else:
-                    errMsg = '密码不正确'
-                    return render(request, 'login.html', locals())
+        user = request.POST.get('user')
+        pwd = request.POST.get('password')
+        users = Users.objects.filter(user=user)
+        if users:
+            u = users[0]
+            if pwd == u.password:
+                request.session['user'] = user
+                request.session.set_expiry(0)  # 设置session过期时间为关闭浏览器
+                resp = HttpResponseRedirect('/index/')  # 跳到首页
+                resp.set_cookie('user', user, 60 * 60 * 24 * 7)  # 设置cookies过期时间为7天
+                return resp
             else:
-                errMsg = '账号不存在'
+                errMsg = '密码不正确'
                 return render(request, 'login.html', locals())
         else:
-            errMsg = '账号或密码不能为空'
+            errMsg = '账号不存在'
             return render(request, 'login.html', locals())
 
 
