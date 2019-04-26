@@ -1,5 +1,5 @@
 # PassAdmin安装教程
-centos 7 ：
+### 系统：centos 7 ：
 
 1.安装python环境
 http://www.6fantian.com/web/#/2?page_id=148
