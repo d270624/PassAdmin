@@ -1,5 +1,4 @@
 # Python:
 db.sqlite3
 .idea/
-__pycache__
 index/migrations
