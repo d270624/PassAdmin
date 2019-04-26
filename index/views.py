@@ -1266,6 +1266,9 @@ def get_tools(request):
         return HttpResponseRedirect('/login/')
 
 
+"""数据库处理相关"""
+
+
 # 数据展示
 def showDatabase(request):
     sess = request.session.get('user')
