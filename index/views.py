@@ -1360,11 +1360,20 @@ def showUrlMgm(request):
         auth = 0
     if sess:
         if request.method == 'GET':
-            form = dataBaseForm()
+            form = UrlMgm()
             return render(request, 'urlmgm.html', locals())
         else:
-            data = UrlMgm.objects.all()
-            serializer = urlMgmSer(data, many=True).data
+            if auth == 1:
+                data = UrlMgm.objects.all()
+                serializer = urlMgmSer(data, many=True).data
+            else:
+                auth = Users.objects.get(user=sess)  # 用户用户名查找到用户对象
+                user_group = auth.user_group  # 通过用户对象查找到用户组
+                urlgroup = user_group.urlgroup  # 通过用户组得到url组
+                url = urlgroup.url  # 通过url组得到url组对象
+                data = url.all()  # 通过url组对象获取所有组内信息
+                # data = auth.user_group.urlmgm.url.all() # 省略写法
+                serializer = urlMgmSer(data, many=True).data
             return JsonResponse({'rows': serializer})
     else:
         return HttpResponseRedirect('/login/')

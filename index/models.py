@@ -51,20 +51,6 @@ class PassWord(models.Model):  # 添加服务器类
         verbose_name_plural = verbose_name  # 效果同上，是复数形式
 
 
-class UsersGroup(models.Model):  # 添加用户分组类
-    def __str__(self):
-        return self.name
-
-    uid = models.AutoField(primary_key=True, verbose_name='ID')  # 自增id
-    name = models.CharField(max_length=30, verbose_name='分组名称')
-    hostgroup = models.ManyToManyField(Group, verbose_name='机器组', blank=True)  # 设置用户组可以拥有哪些机器组的权限
-    host = models.ManyToManyField(PassWord, verbose_name='特定机器', blank=True)
-
-    class Meta:
-        verbose_name = "用户组"  # 定义该实体类在 admin 中显示的名字(单数形式)
-        verbose_name_plural = verbose_name  # 效果同上，是复数形式
-
-
 class remarks(models.Model):
     def __str__(self):
         return self.rep
@@ -75,21 +61,6 @@ class remarks(models.Model):
 
     class Meta:
         verbose_name = "备注信息"  # 定义该实体类在 admin 中显示的名字(单数形式)
-        verbose_name_plural = verbose_name  # 效果同上，是复数形式
-
-
-class Users(models.Model):  # 添加用户类
-    uid = models.AutoField(primary_key=True)
-    user = models.CharField(max_length=30)
-    password = models.CharField(max_length=30)
-    user_group = models.ForeignKey(UsersGroup, null=True, on_delete=models.CASCADE, verbose_name='分组')  # 一对多
-    remark = models.ManyToManyField(remarks, verbose_name='备注信息')  # 多对多
-
-    def __str__(self):
-        return self.user
-
-    class Meta:
-        verbose_name = "用户信息"  # 定义该实体类在 admin 中显示的名字(单数形式)
         verbose_name_plural = verbose_name  # 效果同上，是复数形式
 
 
@@ -198,4 +169,47 @@ class UrlMgm(models.Model):
 
     class Meta:
         verbose_name = "网址记录"  # 定义该实体类在 admin 中显示的名字(单数形式)
+        verbose_name_plural = verbose_name  # 效果同上，是复数形式
+
+
+class UrlMgmgroup(models.Model):
+    def __str__(self):
+        return self.name
+
+    uid = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=50, verbose_name='url分组名称')
+    url = models.ManyToManyField(UrlMgm, blank=True, verbose_name='url')
+
+    class Meta:
+        verbose_name = "网址记录权限控制"  # 定义该实体类在 admin 中显示的名字(单数形式)
+        verbose_name_plural = verbose_name  # 效果同上，是复数形式
+
+
+class UsersGroup(models.Model):  # 添加用户分组类
+    def __str__(self):
+        return self.name
+
+    uid = models.AutoField(primary_key=True, verbose_name='ID')  # 自增id
+    name = models.CharField(max_length=30, verbose_name='分组名称', unique=True)
+    hostgroup = models.ManyToManyField(Group, verbose_name='机器组', blank=True)  # 设置用户组可以拥有哪些机器组的权限
+    host = models.ManyToManyField(PassWord, verbose_name='特定机器', blank=True)
+    urlgroup = models.ForeignKey(UrlMgmgroup, verbose_name='Url分组信息', blank=True, null=True, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = "用户组"  # 定义该实体类在 admin 中显示的名字(单数形式)
+        verbose_name_plural = verbose_name  # 效果同上，是复数形式
+
+
+class Users(models.Model):  # 添加用户类
+    uid = models.AutoField(primary_key=True)
+    user = models.CharField(max_length=30, unique=True)  # 唯一索引
+    password = models.CharField(max_length=30)
+    user_group = models.ForeignKey(UsersGroup, null=True, on_delete=models.CASCADE, verbose_name='用户分组')  # 一对多
+    remark = models.ManyToManyField(remarks, verbose_name='备注信息', blank=True)  # 多对多
+
+    def __str__(self):
+        return self.user
+
+    class Meta:
+        verbose_name = "用户信息"  # 定义该实体类在 admin 中显示的名字(单数形式)
         verbose_name_plural = verbose_name  # 效果同上，是复数形式

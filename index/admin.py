@@ -11,6 +11,7 @@ admin.site.register(dataBase)
 admin.site.register(dataBaseGroup)
 admin.site.register(Project)
 admin.site.register(UrlMgm)
+admin.site.register(UrlMgmgroup)
 
 
 # Register your models here.
