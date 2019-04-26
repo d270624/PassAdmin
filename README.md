@@ -36,8 +36,13 @@ yum install https://centos7.iuscommunity.org/ius-release.rpm -y
 `git clone git@github.com:d270624/PassAdmin.git`
 
 ---
-###  5.执行代码
+###  5.执行构建数据库结构代码
 ```
 cd PassAdmin
-python3.6 manage runserver 0.0.0.0:8000
+python3.6 manage.py makemigrations
+python3.6 manage.py migrate
 ```
+
+---
+### 运行程序
+`python3.6 manage runserver 0.0.0.0:8000`
