@@ -10,6 +10,7 @@ admin.site.register(remarks)
 admin.site.register(dataBase)
 admin.site.register(dataBaseGroup)
 admin.site.register(Project)
+admin.site.register(UrlMgm)
 
 
 # Register your models here.

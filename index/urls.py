@@ -45,5 +45,6 @@ urlpatterns = [
     path('showDatabase/', showDatabase, name='showDatabase'),
     path('addDatabase/', addDatabase, name='addDatabase'),
     path('updateDatabase/', updateDatabase, name='updateDatabase'),
+    path('showUrlMgm/', showUrlMgm, name='showUrlMgm'),
     re_path('^delDatabase/(\d+)', delDatabase, name='delDatabase'),
 ]

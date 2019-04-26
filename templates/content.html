@@ -64,6 +64,14 @@
                 <li>
                     <a href="{% url 'index' %}" id="showServer"><i class="fa fa-table"></i> 服务器记录</a>
                 </li>
+                <li>
+                    <a href="{% url 'showDatabase' %}" id="database"><i class="glyphicon glyphicon-hdd"></i> 数据库记录
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'showUrlMgm' %}" id="urlmgm"><i class="glyphicon glyphicon-link"></i> 管理地址记录
+                    </a>
+                </li>
                 {% if auth == 1 %}
                     <li>
                         <a href="{% url 'add' %}" id="addServer"><i class="fa fa-edit"></i> 添加服务器 </a>
@@ -79,17 +87,14 @@
                     <a href="{% url 'project' %}" id="project"><i class="glyphicon glyphicon-th-large"></i> 项目部署 </a>
                 </li>
                 <li>
-                    <a href="{% url 'edit_project' %}" id="edit_project"><i class="glyphicon glyphicon-edit"></i> 编辑模板 </a>
+                    <a href="{% url 'edit_project' %}" id="edit_project"><i class="glyphicon glyphicon-edit"></i> 编辑模板
+                    </a>
                 </li>
                 <li>
                     <a href="{% url 'queue' %}" id="task"><i class="glyphicon glyphicon-tasks"></i> 任务队列 </a>
                 </li>
                 <li>
                     <a href="{% url 'tools' %}" id="samllTools"><i class="glyphicon glyphicon-wrench"></i> 小工具 </a>
-                </li>
-                <li>
-                    <a href="{% url 'showDatabase' %}" id="database"><i class="glyphicon glyphicon-hdd"></i> 数据库记录
-                    </a>
                 </li>
                 <li>
                     <object type="application/x-shockwave-flash" style="outline:none;"

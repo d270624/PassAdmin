@@ -1350,3 +1350,21 @@ def delDatabase(request, uid):
         return HttpResponseRedirect('/showDatabase/')
     else:
         return HttpResponseRedirect('/login/')
+
+
+def showUrlMgm(request):
+    sess = request.session.get('user')
+    if judgeUserGroup(sess):
+        auth = 1
+    else:
+        auth = 0
+    if sess:
+        if request.method == 'GET':
+            form = dataBaseForm()
+            return render(request, 'urlmgm.html', locals())
+        else:
+            data = UrlMgm.objects.all()
+            serializer = urlMgmSer(data, many=True).data
+            return JsonResponse({'rows': serializer})
+    else:
+        return HttpResponseRedirect('/login/')

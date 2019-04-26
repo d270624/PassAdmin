@@ -50,3 +50,9 @@ class projectSer(serializers.ModelSerializer):
 
     def get_template_name(self, obj):
         return str(obj.template)
+
+
+class urlMgmSer(serializers.ModelSerializer):
+    class Meta:
+        model = UrlMgm
+        fields = '__all__'

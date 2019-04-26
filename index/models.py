@@ -184,3 +184,18 @@ class dataBase(models.Model):
     class Meta:
         verbose_name = "数据库信息"  # 定义该实体类在 admin 中显示的名字(单数形式)
         verbose_name_plural = verbose_name  # 效果同上，是复数形式
+
+
+class UrlMgm(models.Model):
+    def __str__(self):
+        return self.name
+
+    uid = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=50, verbose_name='名称')
+    url = models.CharField(max_length=200, verbose_name='url地址', null=True, blank=True)
+    user = models.CharField(max_length=50, verbose_name='账号', null=True, blank=True)
+    password = models.CharField(max_length=50, verbose_name='密码', null=True, blank=True)  # 密码
+
+    class Meta:
+        verbose_name = "网址记录"  # 定义该实体类在 admin 中显示的名字(单数形式)
+        verbose_name_plural = verbose_name  # 效果同上，是复数形式
