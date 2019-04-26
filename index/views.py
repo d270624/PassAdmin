@@ -1266,7 +1266,7 @@ def get_tools(request):
         return HttpResponseRedirect('/login/')
 
 
-"""数据库处理相关"""
+"""数据库处理"""
 
 
 # 数据展示
