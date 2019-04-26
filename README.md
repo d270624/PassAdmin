@@ -2,8 +2,24 @@
 ### 系统：centos 7 ：
 
 ### 1.安装python环境
-http://www.6fantian.com/web/#/2?page_id=148
 
+#### 安装EPEL和IUS软件源
+yum install epel-release -y
+yum install https://centos7.iuscommunity.org/ius-release.rpm -y
+
+####  安装Python3.6
+yum install python36u -y
+
+####  创建python3连接符
+ln -s /bin/python3.6 /bin/python3
+
+####  安装pip3
+yum install python36u-pip -y
+
+####  创建pip3链接符
+ln -s /bin/pip3.6 /bin/pip3
+
+---
 ###  2.安装依赖包
 yum install python36u-devel.x86_64
 
