@@ -1,5 +1,5 @@
 <uwsgi>
-   <socket>106.14.217.0:8000</socket> <!-- 内部端口，自定义 -->
+   <socket>:8000</socket> <!-- 内部端口，自定义 -->
    <chdir>/usr/local/PassAdmin</chdir> <!-- 项目路径 -->
    <module>PassAdmin.wsgi</module>  <!-- mysite为wsgi.py所在目录名-->
    <processes>4</processes> <!-- 进程数 -->
