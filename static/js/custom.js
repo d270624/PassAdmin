@@ -500,7 +500,6 @@ $(function () {
 
 //部署执行
 function myInterval() {
-    console.log(st);
     if (st === 0 || st === 1) {
         clearInterval(sets);
         if (st === 1) {
