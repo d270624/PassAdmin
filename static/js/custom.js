@@ -266,18 +266,13 @@ function getFileName(file) {//通过第一种方式获取文件名
     return file.substring(pos + 1); //截取最后一个\位置到字符长度，也就是截取文件名
 }
 
-//当前主机识别
-function host() {
-    var host = window.location.host;
-    return host.replace(/8000/, "8001")
-}
 
 //日志控制
 function WebSocketLog(uid, obj_uid) {
     if ("WebSocket" in window) {
         // 打开一个 web socket
         // var host = window.location.host;
-        var ws = new WebSocket("ws://" + location.hostname + ':' + 8003 + "/logs/");
+        var ws = new WebSocket("ws://" + location.hostname + ':' + 8001 + "/logs/");
         ws.onopen = function () {
 
             // Web Socket 已连接上，使用 send() 方法发送数据
@@ -400,7 +395,7 @@ $(function () {
             var formData = new FormData();
             formData.append("myfile", document.getElementById("up").files[0]);
             $.ajax({
-                url: "http://" + host() + "/Upload/",
+                url: "/ufile/",
                 type: "post",
                 data: formData,
                 dataType: 'json',
@@ -531,7 +526,7 @@ $(function () {
                 }
                 formData.append("obj_uid", obj_uid);
                 $.ajax({
-                    url: "http://" + host() + "/Upload/",
+                    url: "/ufile/",
                     type: "POST",
                     dataType: 'json',
                     data: formData,

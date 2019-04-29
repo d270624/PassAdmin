@@ -151,16 +151,16 @@ def progress_bar(a, b):
 def upfile(ip, username, password, port, filename, pdd):
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    mylog.info("../Upload_files/Upload/" + filename)
+    mylog.info("upload/" + filename)
     mylog.info('/' + username + '/' + filename)
     try:
         ssh.connect(hostname=ip, username=username, password=password, port=port, timeout=15)
         ftp = ssh.open_sftp()
         if pdd == 0:
-            ftp.put("../Upload_files/Upload/" + filename, '/' + username + '/' + filename,
+            ftp.put("upload/" + filename, '/' + username + '/' + filename,
                     callback=progress_bar)  # 上传文件,callback=progress_bar
         else:
-            ftp.put("../Upload_files/Upload/" + filename, '/home/' + username + '/' + filename,
+            ftp.put("upload/" + filename, '/home/' + username + '/' + filename,
                     callback=progress_bar)  # 上传文件
         ftp.close()
         ssh.close()

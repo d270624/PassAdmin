@@ -30,7 +30,7 @@ function webssh(unique) {
         }
         ),
         protocol = (location.protocol === 'https:') ? 'wss://' : 'ws://',
-        socketURL = protocol + location.hostname + ((8003) ? (':' + 8003) : '') +
+        socketURL = protocol + location.hostname + ((8001) ? (':' + 8001) : '') +
             '/webconnect/?' + 'unique=' + unique + '&width=' + cols + '&height=' + rows + '&user=' + user;
 
     var sock = new WebSocket(socketURL);

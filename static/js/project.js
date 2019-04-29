@@ -106,7 +106,7 @@ $(function () {
                 }
                 formData.append("obj_uid", obj_uid);
                 $.ajax({
-                    url: "http://" + host() + "/Upload/",
+                    url: "/ufile/",
                     type: "POST",
                     dataType: 'json',
                     data: formData,

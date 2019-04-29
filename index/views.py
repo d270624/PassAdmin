@@ -845,11 +845,10 @@ def webssh(request, uid):
 
 
 # 上传文件
-def ufile_old(request):
+def ufile(request):
     sess = request.session.get('user')
     if sess:
         if request.method == 'POST':
-            # path = request.POST.get('path')
             uid = request.POST.get('uid')
             path = request.FILES.get("myfile", None)  # 获取上传的文件，如果没有文件，则默认为None
             if not path:
@@ -873,43 +872,9 @@ def ufile_old(request):
                 pdd = 1
             if upfile(ip, user, pwd, obj.port, path.name, pdd):
                 os.remove(os.path.join("upload", path.name))
-                data = {'status': "true"}  # ajax上传成功
+                data = {'status': 1}  # ajax上传成功
                 return JsonResponse(data)
-            data = {'status': "error"}  # 上传失败
-            return JsonResponse(data)
-        else:
-            return HttpResponseRedirect('/login/')
-    else:
-        return HttpResponseRedirect('/login/')
-
-
-# 上传文件
-def ufile(request):
-    # 如果上传程序返回1则表示上传成功，那么这边将开始执行正常操作
-    # 1.获取sess,取得用户，2.获取机器uid，得到机器信息，3.得到文件信息
-    sess = request.session.get('user')
-    if sess:
-        if request.method == 'POST':
-            uid = request.POST.get('uid')
-            path = request.POST.get('path')
-            obj = PassWord.objects.get(uid=uid)
-            if obj.intranet_ip is None:
-                ip = obj.ip
-            else:
-                ip = obj.intranet_ip
-            if judgeUserGroup(sess):
-                user = obj.user
-                pwd = en.decrypt(obj.password)
-                pdd = 0
-            else:
-                user = obj.normal_user
-                pwd = en.decrypt(obj.normal_pwd)
-                pdd = 1
-            if upfile(ip, user, pwd, obj.port, path, pdd):
-                os.remove(os.path.join("../Upload_files/Upload", path))
-                data = {'status': "true"}  # ajax上传成功
-                return JsonResponse(data)
-            data = {'status': "error"}  # 上传失败
+            data = {'status': 0}  # 上传失败
             return JsonResponse(data)
         else:
             return HttpResponseRedirect('/login/')
