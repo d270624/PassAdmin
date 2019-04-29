@@ -272,11 +272,6 @@ function host() {
     return host.replace(/8000/, "8001")
 }
 
-function host2() {
-    var host = window.location.host;
-    return host.replace(/8000/, "8003")
-}
-
 //日志控制
 function WebSocketLog(uid, obj_uid) {
     if ("WebSocket" in window) {
