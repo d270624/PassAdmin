@@ -156,7 +156,7 @@ def upfile(ip, username, password, port, filename, pdd):
     try:
         ssh.connect(hostname=ip, username=username, password=password, port=port, timeout=15)
         ftp = ssh.open_sftp()
-        if pdd == 0:
+        if pdd == 1:
             ftp.put("upload/" + filename, '/' + username + '/' + filename,
                     callback=progress_bar)  # 上传文件,callback=progress_bar
         else:

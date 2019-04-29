@@ -865,11 +865,11 @@ def ufile(request):
             if judgeUserGroup(sess):
                 user = obj.user
                 pwd = en.decrypt(obj.password)
-                pdd = 0
+                pdd = 1
             else:
                 user = obj.normal_user
                 pwd = en.decrypt(obj.normal_pwd)
-                pdd = 1
+                pdd = 0
             if upfile(ip, user, pwd, obj.port, path.name, pdd):
                 os.remove(os.path.join("upload", path.name))
                 data = {'status': 1}  # ajax上传成功
@@ -1081,7 +1081,6 @@ def obj_hander(request):
             time_status = request.POST.get('time_status')
             obj_time = request.POST.get('obj_time')
             qname = request.POST.get('qname')
-            path = request.POST.get("path")
             if time_status == "1":  # 如果等于1就执行定时任务
                 if obj_time == '':
                     data['result'] = "time_error"
@@ -1091,7 +1090,7 @@ def obj_hander(request):
                     if times.count(':') == 1:
                         times = times + ":00"
                     sched.add_job(job_timing, 'date', run_date=times,
-                                  args=(path, uid, obj_uid, qname))  # 将定时任务添加到计划任务列表
+                                  args=(uid, obj_uid, qname))  # 将定时任务添加到计划任务列表
                     dic = {
                         'hostname': obj.hostname,
                         'user': sess,
@@ -1104,7 +1103,7 @@ def obj_hander(request):
                     data['result'] = "que_true"
                     return JsonResponse(data)
             else:
-                return JsonResponse(job_normal(path, uid, data, obj_uid))
+                return JsonResponse(job_normal(uid, data, obj_uid))
         else:
             return HttpResponseRedirect('/login/')
     else:
@@ -1112,7 +1111,7 @@ def obj_hander(request):
 
 
 # 定时任务程序
-def job_timing(path, uid, obj_uid, qname):
+def job_timing(uid, obj_uid, qname):
     obj = PassWord.objects.get(uid=int(uid))
     if obj.intranet_ip is None:
         ip = obj.ip
@@ -1120,15 +1119,6 @@ def job_timing(path, uid, obj_uid, qname):
         ip = obj.intranet_ip
 
     que = Queue.objects.get(name=qname)
-    if upfile(ip, obj.user, en.decrypt(obj.password), obj.port, path, 0):  # 上传文件到服务器上
-        os.remove(os.path.join("../Upload_files/Upload", path))
-    else:
-        os.remove(os.path.join("../Upload_files/Upload", path))
-        que.status = '执行失败'
-        que.result = "代理服务器文件上传到远程服务器失败，请检查设置！"
-        que.save()
-        return
-
     pro = Object.objects.get(uid=obj_uid)
     res = job_bash(ip=ip, username=obj.user, password=en.decrypt(obj.password), port=obj.port, cmd=pro.obj_text)
     if res == "err":
@@ -1142,19 +1132,12 @@ def job_timing(path, uid, obj_uid, qname):
 
 
 # 非定时任务程序
-def job_normal(path, uid, data, obj_uid):
+def job_normal(uid, data, obj_uid):
     obj = PassWord.objects.get(uid=int(uid))
     if obj.intranet_ip is None:
         ip = obj.ip
     else:
         ip = obj.intranet_ip
-    if upfile(ip, obj.user, en.decrypt(obj.password), obj.port, path, 0):  # 上传文件到服务器上
-        os.remove(os.path.join("../Upload_files/Upload", path))
-        data['result'] = "file_true"  # ajax上传成功
-    else:
-        os.remove(os.path.join("../Upload_files/Upload", path))
-        data['result'] = "file_false"  # 上传失败
-        return data
     pro = Object.objects.get(uid=obj_uid)
     s = job_bash(ip=ip, username=obj.user, password=en.decrypt(obj.password), port=obj.port, cmd=pro.obj_text)
     # 执行完批量语句以后，开始执行日志查看系统

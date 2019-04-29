@@ -35,7 +35,7 @@ function actionFormatter(value, row, index) {
     result += '<button onclick=window.location.href="/xshell/' + id + '" style="color:#fff;background-color:#2caef5;border-color:#2caef5;border-style:solid">Xshell连接</button> ';
     result += '<button onclick=window.location.href="/xftp/' + id + '" style="color:#fff;background-color:#1a4c67;border-color:#1a4c67;border-style:solid">Xftp上传</button> ';
 
-    result += '<button onclick=document.getElementById("uid2").value=' + id + ';document.getElementById("myModalLabel").innerText="服务器:' + rows + '"' +
+    result += '<button onclick=document.getElementById("up_uid").value=' + id + ';document.getElementById("myModalLabel").innerText="服务器:' + rows + '"' +
         ' style="color:#fff;background-color:#1278e2;border-color:#1278e2;border-style:solid" data-toggle="modal" data-target="#myModal">在线上传</button> ';
 
     result += '<button onclick=document.getElementById("uid3").value=' + id + ';document.getElementById("myModalLabel3").innerText="服务器:' + rows + '"' +
@@ -256,6 +256,7 @@ function radio5() {
     $('#dv3').show();
     $('#dv4').show();
     $('#q_btn').show();
+    let time = $('#time');
     time.val(CurentTime())
     $('#obj_btn').text('添加定时任务');
 }
@@ -384,90 +385,78 @@ $(function () {
         }
     });
 });
+
+
+//通用文件上传方法
+st = 2;
+
+function Upfile(id, input, status, text) {
+    let file_input = $("#" + input + ""); //文件输入框
+    let log_out = $("#" + status + ""); //结果日志输出
+    let uid = $("#" + id + ""); //服务器uid
+    let progressbar = $("#progressbar"); //进度条
+    if (file_input.val() === "") {
+        log_out.text("未选择文件,请先选择文件");
+    } else {
+        log_out.text("上传中,请勿关闭或刷新界面...");
+        let formData = new FormData();
+        formData.append("myfile", file_input.get(0).files[0]);
+        formData.append("uid", uid.val());
+        $.ajax({
+            url: "/ufile/",
+            type: "post",
+            data: formData,
+            dataType: 'json',
+            contentType: false,
+            processData: false,
+            xhr: function () { //获取ajaxSettings中的xhr对象，为它的upload属性绑定progress事件的处理函数
+                myXhr = $.ajaxSettings.xhr();
+                if (myXhr.upload) { //检查upload属性是否存在
+                    //绑定progress事件的回调函数
+                    myXhr.upload.addEventListener('progress', progressHandlingFunction, false);
+                }
+                return myXhr; //xhr对象返回给jQuery使用
+            },
+            success: function (data) {
+                if (data.status === 1) {
+                    progressbar.text('');
+                    progressbar.hide();
+                    log_out.text(text);
+                    st = 1
+                }
+                if (data.status === 0) {
+                    progressbar.text('');
+                    progressbar.hide();
+                    log_out.text(text);
+                    st = 0
+                }
+            },
+            error: function () {
+                log_out.text("上传失败,请检查网络或者服务器配置");
+                st = 0
+            }
+        });
+    }
+
+    //进度条
+    function progressHandlingFunction(e) {
+        let curr = e.loaded;
+        let total = e.total;
+        let process = curr / total * 100;
+        progressbar.show();
+        if (process === 100) {
+            progressbar.text('文件已上传到代理服务器,正在上传到目标服务器...');
+        } else {
+            progressbar.text('当前文件上传进度: ' + parseInt(process) + '%');
+        }
+    }
+}
+
 //文件上传
 $(function () {
-    var ufile = $('#upbutton');
-    ufile.click(function () {
-        if ($("#up").val() === "") {
-            $("#status").text("未选择文件,请先选择文件");
-        } else {
-            $("#status").text("上传中,请勿关闭或刷新界面...");
-            var formData = new FormData();
-            formData.append("myfile", document.getElementById("up").files[0]);
-            $.ajax({
-                url: "/ufile/",
-                type: "post",
-                data: formData,
-                dataType: 'json',
-                contentType: false,
-                processData: false,
-                xhr: function () { //获取ajaxSettings中的xhr对象，为它的upload属性绑定progress事件的处理函数
-                    myXhr = $.ajaxSettings.xhr();
-                    if (myXhr.upload) { //检查upload属性是否存在
-                        //绑定progress事件的回调函数
-                        myXhr.upload.addEventListener('progress', progressHandlingFunction, false);
-                    }
-                    return myXhr; //xhr对象返回给jQuery使用
-                },
-
-                success: function (data) {
-                    if (data.status === 1) {
-                        var uid = $('#uid2').val();
-                        var formData2 = new FormData();
-                        var uploadfile = $("#up").val();
-                        formData2.append("uid", uid);
-                        formData2.append("path", getFileName(uploadfile));
-                        $.ajax({
-                            url: "/ufile/",
-                            type: "post",
-                            contentType: false,
-                            processData: false,
-                            dataType: 'json',
-                            data: formData2,
-                            success: function (data) {
-                                if (data.status === "true") {
-                                    $("#status").text("上传成功！服务器中执行cd可查看已上传文件");
-                                    $("#progressbar").text('');
-                                    $("#progressbar").hide();
-                                } else {
-                                    $("#status").text("上传失败！");
-                                    $("#progressbar").text('');
-                                    $("#progressbar").hide();
-                                }
-                            },
-                            error: function () {
-                                $("#status").text("上传失败！");
-
-                            }
-                        });
-                    }
-                    if (data.status === 0) {
-                        $("#status").text("未选择文件,请先选择文件");
-                        $("#progressbar").text('');
-                        $("#progressbar").hide();
-                    }
-                },
-                error: function () {
-                    $("#status").text("上传失败！");
-
-                }
-            });
-
-            function progressHandlingFunction(e) {
-                var curr = e.loaded;
-                var total = e.total;
-                process = curr / total * 100;
-                $("#progressbar").show();
-                if (process === 100) {
-                    $("#progressbar").text('文件已上传到代理服务器,正在上传到目标服务器...');
-                } else {
-                    $("#progressbar").text('当前文件上传进度: ' + parseInt(process) + '%');
-                }
-            }
-
-
-        }
-    });
+    $('#upbutton').click(function () {
+        Upfile("up_uid", "up", "status", "上传成功！服务器中执行cd可查看已上传文件");
+    })
 });
 //下载文件
 $(function () {
@@ -497,102 +486,72 @@ $(function () {
         )
     });
 });
-//部署执行
+
+
 $(function () {
-    var time = $('#time');
-    var obj_btn = $('#obj_btn');
+    let obj_btn = $('#obj_btn');
     obj_btn.click(function () {
-        if (confirm("确定要部署吗？，部署前请仔细确认模板是否选择正确"))
-            if ($("#obj_up").val() === "") {
-                $('#log').text("未选择文件,请先选择文件");
-            } else {
-                $('#log').text("文件上传中...");
-                var uid = $('#uid3').val(); //服务器uid
-                var obj_uid = $('#select').val();//项目uid
-                var qname = $('#qname').val();
-                var formData = new FormData();
-                var uploadfile = $("#obj_up").val();
-                formData.append("path", getFileName(uploadfile));
-                formData.append("myfile", document.getElementById("obj_up").files[0]);
-                formData.append("uid", uid);
-                formData.append("qname", qname);
-                var pd = time.is(':visible');
-                if (pd) {
-                    var obj_time = time.val();
-                    formData.append("obj_time", obj_time);
-                    formData.append("time_status", "1");
-                } else {
-                    formData.append("time_status", "0");
-                }
-                formData.append("obj_uid", obj_uid);
-                $.ajax({
-                    url: "/ufile/",
-                    type: "POST",
-                    dataType: 'json',
-                    data: formData,
-                    contentType: false,
-                    processData: false,
-                    xhr: function () { //获取ajaxSettings中的xhr对象，为它的upload属性绑定progress事件的处理函数
-                        myXhr = $.ajaxSettings.xhr();
-                        if (myXhr.upload) { //检查upload属性是否存在
-                            //绑定progress事件的回调函数
-                            myXhr.upload.addEventListener('progress', progressHandlingFunction, false);
-                        }
-                        return myXhr; //xhr对象返回给jQuery使用
-                    },
-                    success: function (data) {
-                        if (data.status === 1) {
-                            formData.delete("myfile");
-                            $.ajax({
-                                url: "/obj_hander/",
-                                type: "POST",
-                                dataType: 'json',
-                                data: formData,
-                                contentType: false,
-                                processData: false,
-                                success: function (data) {
-                                    if (data.result === "time_error") {
-                                        $("#log").text("时间不能为空，请检测设置！");
-                                    } else if (data.result === "que_true") {
-                                        $("#log").text("已添加计划任务！");
-                                    } else if (data.result === "file_true") {
-                                        $("#log").text("文件上传成功！");
-                                    } else if (data.result === "file_false") {
-                                        $("#log").text("文件上传失败！");
-                                    } else if (data.result === "server_error") {
-                                        $("#log").text("服务器错误！");
-                                    } else {
-                                        $("#log").text(data.result);
-                                        WebSocketLog(uid, obj_uid);
-                                    }
-                                },
-                                error: function () {
-                                    $("#status").text("未知错误！");
-                                }
-                            });
-                        } else {
-                            $("#log").text("未选择文件,请先选择文件");
-                        }
-                    },
-                    error: function () {
-                        $("#status").text("未知错误！");
-
-                    }
-                });
-            }
+        if (confirm("确定要部署吗？，部署前请仔细确认模板是否选择正确")) {
+            Upfile("uid3", "obj_up", "log", "代码文件上传成功！正在执行部署模板...");
+            sets = setInterval("myInterval()", 200);//1000为1秒钟
+        }
     });
+});
 
-    function progressHandlingFunction(e) {
-        var curr = e.loaded;
-        var total = e.total;
-        process = curr / total * 100;
-        if (process === 100) {
-            $("#log").text('文件已上传到代理服务器,正在上传到目标服务器...');
-        } else {
-            $("#log").text('当前文件上传进度: ' + parseInt(process) + '%');
+//部署执行
+function myInterval() {
+    console.log(st);
+    if (st === 0 || st === 1) {
+        clearInterval(sets);
+        if (st === 1) {
+            // 如果文件上传成功，则执行部署项目的代码
+            let time = $('#time');
+            let obj_time = time.val();
+            let pd = time.is(':visible'); //判断隐藏的定时任务是否显示
+            let formData = new FormData();
+            let uid = $('#uid3').val(); //服务器uid
+            let obj_uid = $('#select').val();//项目uid
+            let qname = $('#qname').val();
+            if (pd) {
+                formData.append("obj_time", obj_time);
+                formData.append("time_status", "1");
+            } else {
+                formData.append("time_status", "0");
+            }
+            formData.append("uid", uid);
+            formData.append("qname", qname);
+            formData.append("obj_uid", obj_uid);
+            $.ajax({
+                url: "/obj_hander/",
+                type: "POST",
+                dataType: 'json',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    if (data.result === "time_error") {
+                        $("#log").text("时间不能为空，请检测设置！");
+                    } else if (data.result === "que_true") {
+                        $("#log").text("已添加计划任务！");
+                    } else if (data.result === "file_true") {
+                        $("#log").text("文件上传成功！");
+                    } else if (data.result === "file_false") {
+                        $("#log").text("文件上传失败！");
+                    } else if (data.result === "server_error") {
+                        $("#log").text("服务器错误！");
+                    } else {
+                        $("#log").text(data.result);
+                        WebSocketLog(uid, obj_uid);
+                    }
+                },
+                error: function () {
+                    $("#log").text("上传失败,请检查网络或者服务器配置");
+                }
+            });
         }
     }
-});
+}
+
 //窗口消失后事件控制
 $(function () {
     $('#myModal4').on('hide.bs.modal', function () {

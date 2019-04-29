@@ -45,7 +45,7 @@
                     <p class="help-block" style="margin-left:0%">选择文件后点击开始上传</p>
                     <p id="status" style="color: #c20006"></p>
                     <p hidden id="progressbar"></p>
-                    <input hidden value="" id="uid2">
+                    <input hidden value="" id="up_uid">
                     <button id="upbutton"
                             style="color:#fff;background-color:#6078c2;border-color:#6078c2;border-style:solid">
                         开始上传
@@ -169,11 +169,6 @@
 
     <div id="toolbar" class="btn-group">
         <ul class="nav nav-tabs">
-{#            {% if auth == 1 %}#}
-{#                <li><a href="javascript:void(0);"#}
-{#                       onclick="if (confirm('确定要重置密码吗？')) {window.location.href='{% url 'change_pwd' %}'}">修改所有机器密码</a>#}
-{#                </li>#}
-{#            {% endif %}#}
             <li class="active"><a href="/index/">所有机器</a></li>
         </ul>
     </div>
