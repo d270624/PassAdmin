@@ -3,3 +3,10 @@ db.sqlite3
 .idea/
 index/migrations/*
 log/*
+PassAdmin/__pycache__/
+__pycache__/
+index/__pycache__/
+index/migrations/
+index/tools/__pycache__/
+index/tools/channel/__pycache__/
+upload/
