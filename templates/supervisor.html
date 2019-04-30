@@ -1,0 +1,62 @@
+{% extends 'content.html' %}
+{% block h %}
+    {% if messages %}
+        <script src="http://i.gtimg.cn/qzone/biz/gdt/lib/jquery/jquery-2.1.4.js?max_age=31536000"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+        <script type="text/javascript">
+            toastr.options.positionClass = 'toast-top-center';
+            {% for msg in messages %}
+                toastr.info('{{ msg.message }}');
+            {% endfor %}
+        </script>
+    {% endif %}
+
+    <!-- /. NAV SIDE  -->
+    <div id="page-wrapper">
+        <div class="header">
+            <h3 class="page-header">
+                supervisor集中管理
+            </h3>
+        </div>
+        <div id="panel panel-default">
+            <div class="col-md-12">
+                <!-- Advanced Tables -->
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div>
+                            <div class="sub-title" style="float: left;width: 18%">ServerList</div>
+                            <div class="sub-title" style="float: left;width: 75%">Information</div>
+                        </div>
+
+                        <div>
+                            <div id="tree" style="width: 12%;float: left"></div>
+                            <div style="float: right;width: 80%">
+                                <table id="table">
+{#                                       class="table table-striped table-bordered table-hover">#}
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+{% endblock %}
+{% block js %}
+    <script src="/static/assets/js/jquery-1.10.2.js"></script>
+    <script src="/static/assets/js/bootstrap.min.js"></script>
+    <script src="/static/assets/js/jquery.metisMenu.js"></script>
+    <script src="/static/assets/js/dataTables/bootstrap-table.js"></script>
+    <script type="text/javascript" src="/static/js/jquery-ui.js"></script>
+    <script src="/static/js/bootstrap-treeview.js"></script>
+    <script src="/static/js/supervisor.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("[placeholder='Search']").attr("AUTOCOMPLETE", "off");
+            $("[placeholder='Search']").attr("value", "ALL");
+        });
+    </script>
+{% endblock %}
+

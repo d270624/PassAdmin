@@ -126,7 +126,6 @@
             }
         };
         $(document).ready(function () {
-            $('#batch').attr('class', 'active-menu');
             $.ajax({
                 url: "/tree/", success: function (results) {
                     var parsedJson = jQuery.parseJSON(results);

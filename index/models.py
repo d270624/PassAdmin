@@ -214,3 +214,18 @@ class Users(models.Model):  # 添加用户类
     class Meta:
         verbose_name = "用户信息"  # 定义该实体类在 admin 中显示的名字(单数形式)
         verbose_name_plural = verbose_name  # 效果同上，是复数形式
+
+
+class supervisor(models.Model):
+    id = models.AutoField(primary_key=True)
+    ip = models.ForeignKey(PassWord, verbose_name='ip', on_delete=models.CASCADE)
+    user = models.CharField(max_length=30, default='user', blank=True, verbose_name='账号')
+    password = models.CharField(max_length=30, default='123', blank=True, verbose_name='密码')
+    port = models.IntegerField(blank=True, default=9001, verbose_name='端口')  # 端口
+
+    def __str__(self):
+        return self.ip.ip
+
+    class Meta:
+        verbose_name = "supervisor"  # 定义该实体类在 admin 中显示的名字(单数形式)
+        verbose_name_plural = verbose_name  # 效果同上，是复数形式

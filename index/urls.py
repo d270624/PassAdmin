@@ -10,7 +10,6 @@ urlpatterns = [
     path('', login),
     path('index/', serverManage, name='index'),
     path('getServerList/', getServerList, name='getServerList'),
-    path('hard/', getSystemInfo, name='hard'),
     # re_path('^index/(\d+)', index),
     path('add/', server_add, name='add'),
     path('handle_hard/', getSystemInfoHandler, name='handle_hard'),
@@ -47,4 +46,6 @@ urlpatterns = [
     path('updateDatabase/', updateDatabase, name='updateDatabase'),
     path('showUrlMgm/', showUrlMgm, name='showUrlMgm'),
     re_path('^delDatabase/(\d+)', delDatabase, name='delDatabase'),
+    path('showSupervisor/', showSupervisor, name='showSupervisor'),
+    path('super/', super_handler, name='super')
 ]

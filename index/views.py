@@ -7,6 +7,7 @@ from .tools import tools
 from .forms import *
 from .connect import *
 import os, time, json
+from index.supervisors import superv
 import django.utils.timezone as timezone
 import threading
 # 定时任务模块
@@ -592,28 +593,6 @@ def server_import(request):
 """服务器信息获取类"""
 
 
-# 获取硬盘、CPU等信息
-def getSystemInfo(request):
-    sess = request.session.get('user')
-    if judgeUserGroup(sess):
-        auth = 1
-    else:
-        auth = 0
-    if sess:
-        pwd = Group.objects.all()
-        host = PassWord.objects.all()
-        all_host = []
-        for x in host:
-            a = {'user_group': x.user_group, 'hostname': x.hostname, 'ip': x.ip, 'system': x.get_system_display(),
-                 'system_info': x.system_info, 'cpu_count': x.cpu_count,
-                 'cpu_info': x.cpu_info, 'mem_info': x.mem_info, 'hard_info': x.hard_info, 'status': x.status
-                 }
-            all_host.append(a)
-        return render(request, 'hardware.html', locals())  # 当没有uid的时候获取所有机器信息
-    else:
-        return HttpResponseRedirect('/login/')
-
-
 # 获取机器信息处理程序
 def getSystemInfoHandler(request):
     sess = request.session.get('user')
@@ -640,7 +619,7 @@ def getSystemInfoHandler(request):
                         pass
                 else:
                     pass
-            return HttpResponseRedirect('/hard/')
+            return HttpResponse('更新成功')
         else:
             return HttpResponseRedirect('/login/')
     else:
@@ -1295,13 +1274,14 @@ def delDatabase(request, uid):
         return HttpResponseRedirect('/login/')
 
 
+# Url管理程序
 def showUrlMgm(request):
     sess = request.session.get('user')
-    if judgeUserGroup(sess):
-        auth = 1
-    else:
-        auth = 0
     if sess:
+        if judgeUserGroup(sess):
+            auth = 1
+        else:
+            auth = 0
         if request.method == 'GET':
             form = UrlMgm()
             return render(request, 'urlmgm.html', locals())
@@ -1320,3 +1300,49 @@ def showUrlMgm(request):
             return JsonResponse({'rows': serializer})
     else:
         return HttpResponseRedirect('/login/')
+
+
+# supervisors
+def showSupervisor(request):
+    sess = request.session.get('user')
+    if sess:
+        if judgeUserGroup(sess):
+            auth = 1
+        else:
+            auth = 0
+        s = supervisor.objects.all()
+        status = request.POST.get('status')
+        if request.method == 'GET':
+            return render(request, 'supervisor.html', locals())
+        elif status == 'list':
+            data = []
+            for x in s:
+                if x.ip.intranet_ip is None:
+                    ip = x.ip.ip
+                else:
+                    ip = x.ip.intranet_ip
+                res = {'text': ip, 'id': x.ip.uid}
+                data.append(res)
+            data = json.dumps(data)
+            return HttpResponse(data)
+        elif status == 'all':
+            for x in s:
+                if x.ip.intranet_ip is None:
+                    ip = x.ip.ip
+                else:
+                    ip = x.ip.intranet_ip
+                sup = superv(ip=ip, user=x.user, password=x.password, port=x.port)
+                data = {'rows': sup.getAllProcessInfo(), 'ip': ip}
+                data = json.dumps(data)
+                return HttpResponse(data)
+        else:
+            return HttpResponse({'status': 'error'})
+    else:
+        return HttpResponseRedirect('/login/')
+
+
+def super_handler(request):
+    action = request.GET.get('action', '')
+    processname = request.GET.get('processname', '')
+    if action == 'restart':
+        pass

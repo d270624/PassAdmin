@@ -36,6 +36,73 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-md-4 col-sm-4">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading"><i class="glyphicon glyphicon-wrench"></i>
+                            修改所有服务器密码
+                        </div>
+                        <div class="panel-body">
+                            <p>谨慎操作，每次可修改时间间隔为一星期</p>
+                        </div>
+                        <div class="panel-footer" style="">
+                            <a href="javascript:void(0);"
+                               onclick="if (confirm('确定要重置密码吗？')) {window.location.href='{% url 'change_pwd' %}'}"><i
+                                    class="glyphicon glyphicon-chevron-right"></i> 使用</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-4">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading"><i class="glyphicon glyphicon-wrench"></i>
+                            更新所有系统状态
+                        </div>
+                        <div class="panel-body">
+                            <p>更新所有服务器的CPU、硬盘、内存等信息</p>
+                        </div>
+                        <div class="panel-footer" style="">
+                            <a href="/handle_hard/"><i class="glyphicon glyphicon-chevron-right"></i> 使用</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-4">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading"><i class="glyphicon glyphicon-wrench"></i>
+                            添加服务器
+                        </div>
+                        <div class="panel-body">
+                            <p>添加服务器账号密码等</p>
+                        </div>
+                        <div class="panel-footer" style="">
+                            <a href="/add/"><i class="glyphicon glyphicon-chevron-right"></i> 使用</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-4">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading"><i class="glyphicon glyphicon-wrench"></i>
+                            批量执行命令
+                        </div>
+                        <div class="panel-body">
+                            <p>批量执行各种脚本命令，使用多线程加队列执行</p>
+                        </div>
+                        <div class="panel-footer" style="">
+                            <a href="/shell/"><i class="glyphicon glyphicon-chevron-right"></i> 使用</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-4">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading"><i class="glyphicon glyphicon-wrench"></i>
+                            supervisor管理
+                        </div>
+                        <div class="panel-body">
+                            <p>进程管理工具，用于服务器进程的集群管理</p>
+                        </div>
+                        <div class="panel-footer" style="">
+                            <a href="/showSupervisor/"><i class="glyphicon glyphicon-chevron-right"></i> 使用</a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
