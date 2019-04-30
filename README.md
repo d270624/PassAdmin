@@ -5,7 +5,7 @@
 
 #### 安装EPEL和IUS软件源
 
-```python
+```shell
 yum install epel-release -y
 yum install https://centos7.iuscommunity.org/ius-release.rpm -y
 ```
