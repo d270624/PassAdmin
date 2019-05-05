@@ -29,7 +29,6 @@
                                 <table id="table" class="table table-striped table-bordered table-hover">
                                 </table>
                             </div>
-
                             <a data-toggle="modal" href="#" data-target="#databaseModal"><i
                                     class="glyphicon glyphicon-chevron-right"></i> 添加数据库信息</a>
 
@@ -111,8 +110,6 @@
         $(document).ready(function () {
             $('#database').attr('class', 'active-menu');
             dataBaseTable();
-            $("[placeholder='Search']").attr("AUTOCOMPLETE", "off");
-            $("[placeholder='Search']").attr("value", "ALL");
         });
     </script>
 {% endblock %}

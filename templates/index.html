@@ -14,6 +14,8 @@
                     <div class="panel-body">
                         <div class="table-responsive">
                             <div>
+                                <input type="text" style="display:none">
+                                <input type="password" style="display:none">
                                 <table id="table" class="table table-striped table-bordered table-hover">
                                 </table>
                             </div>
@@ -198,7 +200,8 @@
             });
             IndexTable("all");
             $('#dataTables-example').dataTable();
-            $("[placeholder='Search']").attr("value", "ALL");
+            {#$("[placeholder='Search']").attr("AUTOCOMPLETE", "off");#}
+            {#$("[placeholder='Search']").attr("value", "ALL");#}
             $('#myModal3').draggable();//设置可以拖动
 
         });

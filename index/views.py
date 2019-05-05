@@ -1356,6 +1356,7 @@ def showSupervisor(request):
         return HttpResponseRedirect('/login/')
 
 
+# supervisor处理函数
 def super_handler(request):
     action = request.GET.get('action', '')
     processname = request.GET.get('processname', '')

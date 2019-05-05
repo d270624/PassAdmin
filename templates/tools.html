@@ -32,7 +32,8 @@
                             <p>这是一个检测连接性的工具</p>
                         </div>
                         <div class="panel-footer" style="">
-                            <a href="http://ping.chinaz.com/"><i class="glyphicon glyphicon-chevron-right"></i> 使用</a>
+                            <a href="http://ping.chinaz.com/" target="_blank"><i
+                                    class="glyphicon glyphicon-chevron-right"></i> 使用</a>
                         </div>
                     </div>
                 </div>
@@ -103,6 +104,22 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="col-md-4 col-sm-4">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading"><i class="glyphicon glyphicon-wrench"></i>
+                            时间戳转换工具
+                        </div>
+                        <div class="panel-body">
+                            <p>爱的魔力转圈圈</p>
+                        </div>
+                        <div class="panel-footer" style="">
+                            <a data-toggle="modal" href="#timestamp" data-target="#timestamp"><i
+                                    class="glyphicon glyphicon-chevron-right"></i> 使用</a>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
 
@@ -135,7 +152,55 @@
                 </div>
             </div>
         </div>
+        <div class="modal fade" id="timestamp" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog" style="width: 585px">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel">时间戳转换工具</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            <label class="form_left" style="display:block">时间戳</label>
+                            <input type="text" class="form-control" id="js_timestamp" name="timestamp"
+                                   style="display:inline">
+                            <select id="js_timestamp_unit" class="select-control"
+                                    style="width: 110px;height: 34px;padding: 5px 12px">
+                                <option value="s">秒(s)</option>
+                                <option value="ms">毫秒(ms)</option>
+                            </select>
+                            <button id="js_convert_timestamp" type="button" class="btn btn-default"
+                                    style="margin-left:0;height: 34px;margin-bottom: 2px;color:#fff;background-color:#2caef5;border-color:#2caef5;border-style:solid">
+                                转换 <i
+                                    class="glyphicon glyphicon-chevron-right"></i>
+                            </button>
+                            <input type="text" class="form-control" id="js_datetime" name="datetime"
+                                   style="display:inline">
+                        </p>
 
+                        <p>
+                            <label class="form_left" style="display:block">时间</label>
+                            <input type="text" class="form-control" id="js_datetime_o" name="datetime_o"
+                                   style="display:inline">
+                            <select id="js_timestamp_unit_o" class="select-control"
+                                    style="width: 110px;height: 34px;padding: 5px 12px">
+                                <option value="s">秒(s)</option>
+                                <option value="ms">毫秒(ms)</option>
+                            </select>
+                            <button id="js_convert_datetime" type="button" class="btn btn-default"
+                                    style="margin-left: 0;height: 34px;margin-bottom: 2px;color:#fff;background-color:#2caef5;border-color:#2caef5;border-style:solid">
+                                转换 <i
+                                    class="glyphicon glyphicon-chevron-right"></i>
+                            </button>
+                            <input type="text" class="form-control" id="js_timestamp_o" name="timestamp_o"
+                                   style="display:inline">
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
 
     </div>
 {% endblock %}
