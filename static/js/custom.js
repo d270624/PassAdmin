@@ -282,6 +282,7 @@ function WebSocketLog(uid, obj_uid) {
         ws.onmessage = function (evt) {
             var received_msg = evt.data;
             $('#log').append(received_msg);
+            document.getElementById('log').scrollTop = document.getElementById('log').scrollHeight;
         };
         ws.onclose = function () {
             // 关闭 websocket

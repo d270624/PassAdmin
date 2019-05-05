@@ -1312,29 +1312,44 @@ def showSupervisor(request):
             auth = 0
         s = supervisor.objects.all()
         status = request.POST.get('status')
+        data = []
         if request.method == 'GET':
             return render(request, 'supervisor.html', locals())
-        elif status == 'list':
-            data = []
+        elif status == 'list':  # 获取所有服务器列表
             for x in s:
                 if x.ip.intranet_ip is None:
                     ip = x.ip.ip
                 else:
                     ip = x.ip.intranet_ip
-                res = {'text': ip, 'id': x.ip.uid}
+                res = {'text': ip, 'id': x.id}
                 data.append(res)
             data = json.dumps(data)
             return HttpResponse(data)
         elif status == 'all':
-            for x in s:
+            for x in s:  # 这边只读取一台即可
                 if x.ip.intranet_ip is None:
                     ip = x.ip.ip
                 else:
                     ip = x.ip.intranet_ip
                 sup = superv(ip=ip, user=x.user, password=x.password, port=x.port)
-                data = {'rows': sup.getAllProcessInfo(), 'ip': ip}
+                data = sup.getAllProcessInfo()  # 获取服务器所有信息
+                for i in data:
+                    i['id'] = x.id
                 data = json.dumps(data)
                 return HttpResponse(data)
+        elif status == 'first':
+            id = request.POST.get('id')
+            res = supervisor.objects.get(id=int(id))
+            if res.ip.intranet_ip is None:
+                ip = res.ip.ip
+            else:
+                ip = res.ip.intranet_ip
+            sup = superv(ip=ip, user=res.user, password=res.password, port=res.port)
+            data = sup.getAllProcessInfo()
+            for i in data:
+                i['id'] = res.id
+            data = json.dumps(data)
+            return HttpResponse(data)
         else:
             return HttpResponse({'status': 'error'})
     else:
@@ -1344,5 +1359,28 @@ def showSupervisor(request):
 def super_handler(request):
     action = request.GET.get('action', '')
     processname = request.GET.get('processname', '')
+    id = request.GET.get('id', '')
+    res = supervisor.objects.get(id=id)
+    if res.ip.intranet_ip is None:
+        ip = res.ip.ip
+    else:
+        ip = res.ip.intranet_ip
+    sup = superv(ip=ip, user=res.user, password=res.password, port=res.port)
     if action == 'restart':
-        pass
+        sup.restart(processname)
+        messages.success(request, "重启成功")
+        return HttpResponseRedirect('/showSupervisor/')
+    if action == 'start':
+        res = sup.start(processname)
+        if res:
+            messages.success(request, "启动成功")
+        else:
+            messages.success(request, "启动失败")
+        return HttpResponseRedirect('/showSupervisor/')
+    if action == 'stop':
+        res = sup.stop(processname)
+        if res:
+            messages.success(request, "停止成功")
+        else:
+            messages.success(request, "停止失败")
+        return HttpResponseRedirect('/showSupervisor/')

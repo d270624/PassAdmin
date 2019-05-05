@@ -4,7 +4,7 @@ import telnetlib
 import xlrd
 import re
 import os
-from index.tools.channel.public import *
+from index.tools.channel.tailf import *
 from queue import Queue as LinxQueue
 from index.Rsa import *
 import socket
