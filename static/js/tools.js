@@ -52,10 +52,10 @@ $('#js_convert_datetime').click(function () {
     if (select === 's') {
         var date = new Date($('#js_datetime_o').val());
         var time = date.getTime();
-        $('#js_timestamp_o').val(time);
+        $('#js_timestamp_o').val(time / 1000);
     } else {
         var date = new Date($('#js_datetime_o').val());
         var time = date.getTime();
-        $('#js_timestamp_o').val(time * 1000);
+        $('#js_timestamp_o').val(time);
     }
 });
