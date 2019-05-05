@@ -58,6 +58,4 @@ $('#js_convert_datetime').click(function () {
         var time = date.getTime();
         $('#js_timestamp_o').val(time * 1000);
     }
-
-
 });
