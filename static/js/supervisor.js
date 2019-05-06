@@ -127,20 +127,54 @@ $('#databaseModal').on('hide.bs.modal', function () {
 $('#startAllProcesses').click(function () {
     let arr = $('#tree').treeview('getSelected');
     let id = arr[0].id;
-    window.open("/super?id=" + id + "&action=startAllProcesses",'_self')
+    window.open("/super?id=" + id + "&action=startAllProcesses", '_self')
 });
 $('#stopAllProcesses').click(function () {
     let arr = $('#tree').treeview('getSelected');
     let id = arr[0].id;
-    window.open("/super?id=" + id + "&action=stopAllProcesses",'_self')
+    window.open("/super?id=" + id + "&action=stopAllProcesses", '_self')
 });
 $('#restartService').click(function () {
     let arr = $('#tree').treeview('getSelected');
     let id = arr[0].id;
-    window.open("/super?id=" + id + "&action=restartService",'_self')
+    window.open("/super?id=" + id + "&action=restartService", '_self')
 });
 $('#reloadConfig').click(function () {
     let arr = $('#tree').treeview('getSelected');
     let id = arr[0].id;
-    window.open("/super?id=" + id + "&action=reloadConfig",'_self')
+    window.open("/super?id=" + id + "&action=reloadConfig", '_self')
+});
+
+
+$(function () {
+    var defaultData;
+    var initSearchableTree = function () {
+        return $('#tree').treeview({
+            data: defaultData,
+            nodeIcon: 'glyphicon glyphicon-globe',
+            emptyIcon: '', //没有子节点的节点图标
+            //collapsed: true,
+        });
+    };
+    var $searchableTree = initSearchableTree();
+    $('#tree').treeview('collapseAll', {
+        silent: false//设置初始化节点关闭
+    });
+    var findSearchableNodes = function () {
+        return $searchableTree.treeview('search', [$.trim($('#input-search').val()), {
+            ignoreCase: false,
+            exactMatch: false
+        }]);
+    };
+    var searchableNodes = findSearchableNodes();
+    $('#input-search').on('keyup', function (e) {
+        var str = $('#input-search').val();
+        if ($.trim(str).length > 0) {
+            searchableNodes = findSearchableNodes();
+        } else {
+            $('#tree').treeview('collapseAll', {
+                silent: false //设置初始化节点关闭
+            });
+        }
+    });
 });
