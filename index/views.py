@@ -1385,3 +1385,31 @@ def super_handler(request):
         else:
             messages.success(request, "停止失败")
         return HttpResponseRedirect('/showSupervisor/')
+    if action == 'startAllProcesses':
+        res = sup.start_all()
+        if res:
+            messages.success(request, "启动成功")
+        else:
+            messages.success(request, "启动失败")
+        return HttpResponseRedirect('/showSupervisor/')
+    if action == 'stopAllProcesses':
+        res = sup.stop_all()
+        if res:
+            messages.success(request, "停止成功")
+        else:
+            messages.success(request, "停止失败")
+        return HttpResponseRedirect('/showSupervisor/')
+    if action == 'restartService':
+        res = sup.restart_all()
+        if res:
+            messages.success(request, "重启成功")
+        else:
+            messages.success(request, "重启失败")
+        return HttpResponseRedirect('/showSupervisor/')
+    if action == 'reloadConfig':
+        res = sup.restart_all()
+        if res:
+            messages.success(request, "重启加载配置成功")
+        else:
+            messages.success(request, "重启加载配置失败")
+        return HttpResponseRedirect('/showSupervisor/')

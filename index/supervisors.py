@@ -20,13 +20,6 @@ class superv:
         except xmlrpc.client.Fault:
             return False
 
-    def restart_all(self, name):
-        try:
-            self.server.supervisor.restart()
-            return True
-        except xmlrpc.client.Fault:
-            return False
-
     def restart(self, name):
         try:
             self.server.supervisor.stopProcess(name)
@@ -37,19 +30,32 @@ class superv:
         except xmlrpc.client.Fault:
             pass
 
-    def state(self, name):
-        res = self.server.supervisor.getProcessInfo(name)
-        methods = self.server.system.listMethods()
-        print(methods)
-
     def start_all(self):
-        self.server.supervisor.startAllProcesses()
+        try:
+            self.server.supervisor.startAllProcesses()
+            return True
+        except xmlrpc.client.Fault:
+            return False
 
     def stop_all(self):
-        self.server.supervisor.stopAllProcesses()
+        try:
+            self.server.supervisor.stopAllProcesses()
+        except xmlrpc.client.Fault:
+            return False
+
+    def restart_all(self):
+        try:
+            self.server.supervisor.restart()
+            return True
+        except xmlrpc.client.Fault:
+            return False
 
     def getAllProcessInfo(self):
         return self.server.supervisor.getAllProcessInfo()
 
-    def tools(self):
-        self.server.system.listMethods()
+    def reloadConfig(self):
+        try:
+            self.server.supervisor.reloadConfig()
+            return True
+        except xmlrpc.client.Fault:
+            return False

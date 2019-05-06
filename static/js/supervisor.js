@@ -32,7 +32,7 @@ function table(status, data) {
         sortOrder: "desc",
         pageList: "[10, 25, 50, 100, All]",
         search: false,
-
+        toolbar: "#toolbar",
         columns: [{
             field: 'description',
             title: 'Description',
@@ -122,4 +122,25 @@ function WebSocketLog(uid, name) {
 
 $('#databaseModal').on('hide.bs.modal', function () {
     location.reload();
+});
+
+$('#startAllProcesses').click(function () {
+    let arr = $('#tree').treeview('getSelected');
+    let id = arr[0].id;
+    window.open("/super?id=" + id + "&action=startAllProcesses",'_self')
+});
+$('#stopAllProcesses').click(function () {
+    let arr = $('#tree').treeview('getSelected');
+    let id = arr[0].id;
+    window.open("/super?id=" + id + "&action=stopAllProcesses",'_self')
+});
+$('#restartService').click(function () {
+    let arr = $('#tree').treeview('getSelected');
+    let id = arr[0].id;
+    window.open("/super?id=" + id + "&action=restartService",'_self')
+});
+$('#reloadConfig').click(function () {
+    let arr = $('#tree').treeview('getSelected');
+    let id = arr[0].id;
+    window.open("/super?id=" + id + "&action=reloadConfig",'_self')
 });
