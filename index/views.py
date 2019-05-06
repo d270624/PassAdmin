@@ -1043,7 +1043,7 @@ def obj_del(request, uid):
     if sess:
         obj = Object.objects.get(uid=uid)
         obj.delete()
-        return HttpResponseRedirect('/object/')
+        return HttpResponseRedirect('/edit_project/')
     else:
         return HttpResponseRedirect('/login/')
 
