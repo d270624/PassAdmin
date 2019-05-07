@@ -42,43 +42,35 @@ class PassWordForm(forms.ModelForm):  # 自动生成表单
             'hostname': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': '选填',
-                'onblur': 'check();',
             }),
             'system': forms.Select(attrs={'class': 'form-control'}),
             'ip': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': '选填',
-                'onblur': 'check();'
             }),
             'intranet_ip': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': '选填',
-                'onblur': 'check();'
             }),
             'user': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': '选填',
-                'onblur': 'check();'
             }),
             'password': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': '选填',
-                'onblur': 'check();'
             }),
             'normal_user': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': '选填',
-                'onblur': 'check();'
             }),
             'normal_pwd': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': '选填',
-                'onblur': 'check();'
             }),
             'port': forms.NumberInput(attrs={
                 'class': 'form-control',
                 'placeholder': '选填',
-                'onblur': 'check();'
             }),
             'user_group': forms.Select(attrs={'class': 'form-control'}),
 

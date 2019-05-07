@@ -1413,3 +1413,56 @@ def super_handler(request):
         else:
             messages.success(request, "重启加载配置失败")
         return HttpResponseRedirect('/showSupervisor/')
+
+
+def getSuperConf(request):
+    sess = request.session.get('user')
+    if sess:
+        if judgeUserGroup(sess):
+            id = request.POST.get('id')
+            content = request.POST.get('content')
+            res = supervisor.objects.get(id=id)
+            if res.ip.intranet_ip is None:
+                ip = res.ip.ip
+            else:
+                ip = res.ip.intranet_ip
+            res = job_bash(ip=ip, username=res.ip.user, password=en.decrypt(res.ip.password), port=res.ip.port,
+                           cmd="cat /etc/supervisord.conf")
+            return JsonResponse({'data': res})
+        else:
+            return HttpResponseRedirect('/login/')
+    else:
+        return HttpResponseRedirect('/login/')
+
+
+def saveSuperConf(request):
+    sess = request.session.get('user')
+    if sess:
+        if judgeUserGroup(sess):
+            id = request.POST.get('id')
+            content = request.POST.get('content')
+            content = content.replace('\r', '')
+            with open('upload/supervisord.conf', 'w', encoding='utf-8') as f:
+                f.writelines(content)
+            res = supervisor.objects.get(id=id)
+            if res.ip.intranet_ip is None:
+                ip = res.ip.ip
+            else:
+                ip = res.ip.intranet_ip
+            ssh = paramiko.SSHClient()
+            ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+            try:
+                ssh.connect(hostname=ip, username=res.ip.user, password=en.decrypt(res.ip.password), port=res.ip.port,
+                            timeout=15)
+                ftp = ssh.open_sftp()
+                ftp.put('upload/supervisord.conf', '/etc/supervisord.conf')
+                ftp.close()
+                return JsonResponse({'data': 'sucess'})
+            except:
+                return JsonResponse({'data': 'err'})
+            finally:
+                ssh.close()
+        else:
+            return HttpResponseRedirect('/login/')
+    else:
+        return HttpResponseRedirect('/login/')

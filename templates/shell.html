@@ -61,7 +61,7 @@
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                         <h4 class="modal-title" id="myModalLabel">Result</h4>
                     </div>
-                    <div class="modal-body" style="height: 800px;overflow: auto;">
+                    <div class="modal-body" style="height: 700px;overflow: auto;">
                         <table class="table table-striped table-bordered table-hover" id="table">
                         </table>
                     </div>
@@ -100,11 +100,11 @@
             </div>
         </div>
     </div>
+
 {% endblock %}
 {% block js %}
     <link rel="stylesheet" href="/static/js/bootstrapStyle.css" type="text/css">
     <script type="text/javascript" src="/static/js/jquery-1.11.1.min.js"></script>
-    <script type="text/javascript" src="/static/js/bootstrap.js"></script>
     <script src="/static/assets/js/dataTables/bootstrap-table.js"></script>
     <script type="text/javascript" src="/static/js/jquery.ztree.core.js"></script>
     <script type="text/javascript" src="/static/js/jquery.ztree.excheck.js"></script>
@@ -113,4 +113,6 @@
     <script type="text/javascript" src="/static/js/search.js"></script>
     <script type="text/javascript" src="/static/js/jquery-ui.js"></script>
     <script type="text/javascript" src="/static/js/shell.js"></script>
+    <script type="text/javascript" src="/static/js/bootstrap-tooltip.js"></script>
+    <script type="text/javascript" src="/static/js/bootstrap-popover.js"></script>
 {% endblock %}

@@ -48,4 +48,6 @@ urlpatterns = [
     re_path('^delDatabase/(\d+)', delDatabase, name='delDatabase'),
     path('showSupervisor/', showSupervisor, name='showSupervisor'),
     path('super/', super_handler, name='super'),
+    path('getSuperConf/', getSuperConf, name='getSuperConf'),
+    path('saveSuperConf/', saveSuperConf, name='saveSuperConf'),
 ]

@@ -1,5 +1,6 @@
 var setting = {
     view: {
+        fontCss: setFontCss,
         selectedMulti: false
     },
     check: {
@@ -19,7 +20,6 @@ $(document).ready(function () {
         url: "/tree/", success: function (results) {
             var parsedJson = jQuery.parseJSON(results);
             $.fn.zTree.init($("#tree"), setting, parsedJson);
-
             document.getElementById("key").value = ""; //清空搜索框中的内容
             //绑定事件
             key = $("#key");
@@ -54,26 +54,22 @@ $(document).ready(function () {
         onDblClickRow: function (row) {
             $('#cmd').val(row.content);
         }
+    }).on('all.bs.table', function (e, name, args) {
+        $('[data-toggle="tooltip"]').popover();
     });
 });
-var setting = {
-    view: {
-        fontCss: setFontCss
-    },
-    data: {
-        simpleData: {
-            enable: true
-        }
-    }
-};
 
 //提示框
 function paramsMatter(value, row, index) {
-    var span = document.createElement('span');
-    span.setAttribute('title', row.content);
-    span.innerHTML = value;
-    return span.outerHTML;
+    let div = $("<div></div>");
+    div.html(value);
+    div.attr("data-original-title", "<h3>command</h3>");
+    div.attr("data-placement", "left");
+    div.attr("data-content",row.content.replace(/\n/g, "<br>"));
+    div.attr("data-toggle", "tooltip");
+    return div.prop("outerHTML");
 }
+
 
 //操作框
 function actionFormatter(value, row, index) {
@@ -82,7 +78,7 @@ function actionFormatter(value, row, index) {
     myArray[1] = row.name;
     myArray[2] = row.content;
     let result = "";
-    result += '<button onclick=\"modify(\'' + row.uid + '\',\'' + row.name + '\',\'' + row.content + '\')" style="color:#fff;background-color:#409eff;border-color:#409eff;border-style:solid">编辑</button>';
+    result += '<button onclick=\"modify(\'' + row.uid + '\',\'' + row.name + '\',\'' + escape(row.content) + '\')" style="color:#fff;background-color:#409eff;border-color:#409eff;border-style:solid">编辑</button>';
     result += '<button onclick="del_template(' + row.uid + ')" style="color:#fff;background-color:#c20003;border-color:#c20006;border-style:solid">删除</button>';
     return result;
 }
@@ -90,7 +86,7 @@ function actionFormatter(value, row, index) {
 // 编辑模板
 function modify(uid, name, content) {
     $('#temp_name').val(name);
-    $('#temp_text').val(content);
+    $('#temp_text').val(unescape(content));
     $('#temp_uid').val(uid);
     $('#temp_btn').text('修改');
     $('#server').modal();
@@ -107,7 +103,7 @@ function del_template(uid) {
                 dataType: 'json',
                 async: true,
                 success: function (data) {
-                    alert(data.mes)
+                    alert(data.mes);
                     location.reload();
                 },
                 error: function (status, error) {
@@ -131,7 +127,7 @@ $('#temp_btn').click(function () {
             dataType: 'json',
             async: 'true',
             success: function (data) {
-                alert(data.mes)
+                alert(data.mes);
                 location.reload();
             },
             error: function (status, error) {
@@ -141,7 +137,7 @@ $('#temp_btn').click(function () {
 });
 //弹框实现移动效果
 $('#server').draggable();
-$('#myModal').draggable();
+// $('#myModal').draggable();
 
 
 //-->

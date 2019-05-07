@@ -1,5 +1,5 @@
 let formData = new FormData();
-formData.append('status', 'list')
+formData.append('status', 'list');
 $.ajax({
     type: "post",
     contentType: false,
@@ -16,6 +16,42 @@ $.ajax({
         });
     }
 });
+
+//搜索框
+$(function () {
+    var defaultData;
+    var initSearchableTree = function () {
+        return $('#tree').treeview({
+            data: defaultData,
+            nodeIcon: 'glyphicon glyphicon-globe',
+            emptyIcon: '', //没有子节点的节点图标
+            //collapsed: true,
+        });
+    };
+    var $searchableTree = initSearchableTree();
+    $('#tree').treeview('collapseAll', {
+        silent: false//设置初始化节点关闭
+    });
+    var findSearchableNodes = function () {
+        return $searchableTree.treeview('search', [$.trim($('#input-search').val()), {
+            ignoreCase: false,
+            exactMatch: false
+        }]);
+    };
+    var searchableNodes = findSearchableNodes();
+    $('#input-search').on('keyup', function (e) {
+        var str = $('#input-search').val();
+        if ($.trim(str).length > 0) {
+            searchableNodes = findSearchableNodes();
+        } else {
+            $('#tree').treeview('collapseAll', {
+                silent: false //设置初始化节点关闭
+            });
+        }
+    });
+});
+
+//列表框
 table('all', 'none');
 
 function table(status, data) {
@@ -85,16 +121,16 @@ function table(status, data) {
     });
 }
 
-
 function operation(value, row, index) {
     var result = "";
     result += '<a style="margin-right: 10px;display: inline" href="/super?id=' + row.id + '&processname=' + row.name + '&action=restart">Restart</a>';
     result += '<a style="margin-right: 10px;display: inline" href="/super?id=' + row.id + '&processname=' + row.name + '&action=start">Start</a>';
     result += '<a style="margin-right: 10px;display: inline" href="/super?id=' + row.id + '&processname=' + row.name + '&action=stop">Stop</a>';
-    result += '<a style="margin-right: 10px;display: inline" onmouseover="this.style.cursor=\'pointer\'" data-toggle="modal" data-target="#databaseModal"  onclick=\'WebSocketLog("' + row.id + '","' + row.name + '")\'>Tail -f</a>';
+    result += '<a style="margin-right: 10px;display: inline" onmouseover="this.style.cursor=\'pointer\'" data-toggle="modal" data-target="#tail"  onclick=\'WebSocketLog("' + row.id + '","' + row.name + '")\'>Tail -f</a>';
     return result;
 };
 
+//日志框
 function WebSocketLog(uid, name) {
     if ("WebSocket" in window) {
         // 打开一个 web socket
@@ -120,61 +156,80 @@ function WebSocketLog(uid, name) {
     }
 }
 
-$('#databaseModal').on('hide.bs.modal', function () {
-    location.reload();
-});
+
+//工具栏按钮功能
+function getid() {
+    let arr = $('#tree').treeview('getSelected');
+    let id = arr[0].id;
+    return id
+}
 
 $('#startAllProcesses').click(function () {
-    let arr = $('#tree').treeview('getSelected');
-    let id = arr[0].id;
-    window.open("/super?id=" + id + "&action=startAllProcesses", '_self')
+    window.open("/super?id=" + getid() + "&action=startAllProcesses", '_self')
 });
+
 $('#stopAllProcesses').click(function () {
-    let arr = $('#tree').treeview('getSelected');
-    let id = arr[0].id;
-    window.open("/super?id=" + id + "&action=stopAllProcesses", '_self')
+    window.open("/super?id=" + getid() + "&action=stopAllProcesses", '_self')
 });
+
 $('#restartService').click(function () {
-    let arr = $('#tree').treeview('getSelected');
-    let id = arr[0].id;
-    window.open("/super?id=" + id + "&action=restartService", '_self')
+    window.open("/super?id=" + getid() + "&action=restartService", '_self')
 });
+
 $('#reloadConfig').click(function () {
-    let arr = $('#tree').treeview('getSelected');
-    let id = arr[0].id;
-    window.open("/super?id=" + id + "&action=reloadConfig", '_self')
+    window.open("/super?id=" + getid() + "&action=reloadConfig", '_self')
 });
 
-
-$(function () {
-    var defaultData;
-    var initSearchableTree = function () {
-        return $('#tree').treeview({
-            data: defaultData,
-            nodeIcon: 'glyphicon glyphicon-globe',
-            emptyIcon: '', //没有子节点的节点图标
-            //collapsed: true,
-        });
-    };
-    var $searchableTree = initSearchableTree();
-    $('#tree').treeview('collapseAll', {
-        silent: false//设置初始化节点关闭
-    });
-    var findSearchableNodes = function () {
-        return $searchableTree.treeview('search', [$.trim($('#input-search').val()), {
-            ignoreCase: false,
-            exactMatch: false
-        }]);
-    };
-    var searchableNodes = findSearchableNodes();
-    $('#input-search').on('keyup', function (e) {
-        var str = $('#input-search').val();
-        if ($.trim(str).length > 0) {
-            searchableNodes = findSearchableNodes();
-        } else {
-            $('#tree').treeview('collapseAll', {
-                silent: false //设置初始化节点关闭
-            });
+//tail -f log关闭后事件
+$('#tail').on('hide.bs.modal', function () {
+    location.reload();
+});
+$('#confModal').on('hide.bs.modal', function () {
+    location.reload();
+});
+//编辑confi配置显示时事件
+$('#confModal').on('show.bs.modal', function () {
+    $('#view').text("loading...");
+    let data = new FormData();
+    data.append('id', getid());
+    $.ajax({
+        type: "post",
+        contentType: false,
+        processData: false,
+        data: data,
+        url: "/getSuperConf/",
+        dataType: "json",
+        success: function (data) {
+            if (data.data === "err") {
+                $('#view').text("Failed to load!\r\nTips:config file path must be /etc/supervisord.conf")
+            } else {
+                $('#view').text(data.data)
+            }
         }
     });
 });
+
+$('#modify').click(function () {
+    let content = $('#view').val();
+    let data = new FormData();
+    data.append('id', getid());
+    data.append('content', content);
+    $('#modify').attr("disabled", "disabled");
+    $.ajax({
+        type: "post",
+        contentType: false,
+        processData: false,
+        data: data,
+        url: "/saveSuperConf/",
+        dataType: "json",
+        success: function (data) {
+            $('#modify').removeAttr('disabled');
+            toastr.options.positionClass = 'toast-top-center';
+            if (data.data === "err") {
+                toastr.error("save faild");
+            } else {
+                toastr.success("success");
+            }
+        }
+    });
+})
