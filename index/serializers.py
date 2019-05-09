@@ -4,7 +4,7 @@ from .models import *  # 导入表
 
 class Newstagserializer(serializers.ModelSerializer):
     system = serializers.CharField(source='get_system_display')
-    user_group = serializers.CharField()
+    group = serializers.CharField()
 
     class Meta:
         model = PassWord

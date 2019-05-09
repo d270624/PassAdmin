@@ -134,6 +134,7 @@ def serverManage(request):
     sess = request.session.get('user')
     if sess:
         value = Object.objects.all()
+        group = Group.objects.all()
         if judgeUserGroup(sess):
             auth = 1
             return render(request, 'index.html', locals())
@@ -142,124 +143,6 @@ def serverManage(request):
             return render(request, 'index.html', locals())
     else:
         return HttpResponseRedirect('/login/')
-        # user_group = Users.objects.get(user=sess).user_group  # 取用户组
-        # value = Object.objects.all()
-        #
-        # use = Users.objects.get(user=sess)
-        # rep = use.remark.all()  # 获取备注信息
-        # all_host = []
-        # dd = {}
-        # for x in rep:
-        #     dd[x.host.uid] = [x.rep, x.uid]  # 将用户的备注信息添加到字典
-        # if str(user_group) == "AdminGroup":
-        #     auth = 0
-        #     pwd = Group.objects.all()  # 获取分组信息
-        #     if uid:
-        #         uid = int(uid)
-        #         # -------------------获取指定分组-----------------------#
-        #         groups = Group.objects.get(uid=uid)
-        #         host = groups.password_set.all()  # 获取指定分组的全部数据
-        #         for x in host:
-        #             try:
-        #                 reps = dd[x.uid][0]
-        #                 rep_uid = dd[x.uid][1]
-        #                 a = {'hostname': x.hostname, 'password': en.decrypt(x.password), 'ip': x.ip, 'user': x.user,
-        #                      'port': x.port,
-        #                      'user_group': x.user_group, 'system': x.get_system_display(), 'uid': x.uid,
-        #                      'cpu_count': x.cpu_count, 'mem_info': x.mem_info, 'rep': reps, 'rep_uid': rep_uid}
-        #                 all_host.append(a)
-        #             except:
-        #                 a = {'hostname': x.hostname, 'password': en.decrypt(x.password), 'ip': x.ip, 'user': x.user,
-        #                      'port': x.port,
-        #                      'user_group': x.user_group, 'system': x.get_system_display(), 'uid': x.uid,
-        #                      'cpu_count': x.cpu_count, 'mem_info': x.mem_info, 'rep': ' ', 'rep_uid': None}
-        #                 all_host.append(a)
-        #         return render(request, 'index.html', locals())  # 当有uid的时候只显示分组信息
-        #     # ------------------获取所有机器------------------------#
-        #     data = {}
-        #     host = PassWord.objects.all()
-        #     return render(request, 'index.html', locals())
-        # else:  # --------------------------------------------------------------------以下是普通用户权限
-        #     fenlei = UsersGroup.objects.get(name=user_group)
-        #     auth = 1
-        #     s = [x for x in fenlei.host.all()]  # 获取特殊指定的机器，不管机器是否在在组内都会获取
-        #     print(s)
-        #     pwd = Group.objects.all()
-        #     if uid:
-        #         uid = int(uid)
-        #         # -------------------获取指定分组-----------------------#
-        #         groups = Group.objects.get(uid=uid)
-        #         host = groups.password_set.all()  # 获取指定分组的全部数据
-        #         for x in s:  # 获取特殊指定的机器，不管机器是否在在组内都会获取
-        #             if x.user_group.uid == uid:  # 如果指定组的id等于了特定组的时候才去显示
-        #                 try:
-        #                     reps = dd[x.uid][0]
-        #                     rep_uid = dd[x.uid][1]
-        #                     a = {'hostname': x.hostname, 'ip': x.ip, 'user': x.normal_user,
-        #                          'port': x.port, 'user_group': x.user_group, 'system': x.get_system_display(),
-        #                          'uid': x.uid,
-        #                          'cpu_count': x.cpu_count, 'mem_info': x.mem_info, 'rep': reps, 'rep_uid': rep_uid}
-        #                     all_host.append(a)
-        #                 except:
-        #                     a = {'hostname': x.hostname, 'ip': x.ip, 'user': x.normal_user,
-        #                          'port': x.port, 'user_group': x.user_group, 'system': x.get_system_display(),
-        #                          'uid': x.uid,
-        #                          'cpu_count': x.cpu_count, 'mem_info': x.mem_info, 'rep': ' ', 'rep_uid': None}
-        #                     all_host.append(a)
-        #         for x in host:  # 在组内的机器显示
-        #             if x.uid == uid:
-        #                 try:
-        #                     reps = dd[x.uid][0]
-        #                     rep_uid = dd[x.uid][1]
-        #                     a = {'hostname': x.hostname, 'ip': x.ip, 'user': x.normal_user,
-        #                          'port': x.port, 'user_group': x.user_group, 'system': x.get_system_display(),
-        #                          'uid': x.uid,
-        #                          'cpu_count': x.cpu_count, 'mem_info': x.mem_info, 'rep': reps, 'rep_uid': rep_uid}
-        #                     if a not in all_host:
-        #                         all_host.append(a)
-        #                 except:
-        #                     a = {'hostname': x.hostname, 'ip': x.ip, 'user': x.normal_user,
-        #                          'port': x.port, 'user_group': x.user_group, 'system': x.get_system_display(),
-        #                          'uid': x.uid,
-        #                          'cpu_count': x.cpu_count, 'mem_info': x.mem_info, 'rep': ' ', 'rep_uid': None}
-        #                     if a not in all_host:
-        #                         all_host.append(a)
-        #         return render(request, 'index.html', locals())  # 当有uid的时候只显示分组信息
-        # ------------------获取所有机器------------------------#
-        # for x in s:
-        #     try:
-        #         reps = dd[x.uid][0]
-        #         rep_uid = dd[x.uid][1]
-        #         a = {'hostname': x.hostname, 'ip': x.ip, 'user': x.normal_user,
-        #              'port': x.port, 'user_group': x.user_group, 'system': x.get_system_display(), 'uid': x.uid,
-        #              'cpu_count': x.cpu_count, 'mem_info': x.mem_info, 'rep': reps, 'rep_uid': rep_uid}
-        #         all_host.append(a)
-        #     except:
-        #         a = {'hostname': x.hostname, 'ip': x.ip, 'user': x.normal_user,
-        #              'port': x.port, 'user_group': x.user_group, 'system': x.get_system_display(), 'uid': x.uid,
-        #              'cpu_count': x.cpu_count, 'mem_info': x.mem_info, 'rep': ' ', 'rep_uid': None}
-        #         all_host.append(a)
-        # for x in fenlei.hostgroup.all():  # 获取用户所拥有的所有机器组
-        #     groups = Group.objects.get(uid=x.uid)  # 根据分类uid获取组名
-        #     host = groups.password_set.all()
-        #     for x in host:
-        #         try:
-        #             reps = dd[x.uid][0]
-        #             rep_uid = dd[x.uid][1]
-        #             a = {'hostname': x.hostname, 'ip': x.ip, 'user': x.normal_user, 'port': x.port,
-        #                  'user_group': x.user_group, 'system': x.get_system_display(), 'uid': x.uid,
-        #                  'cpu_count': x.cpu_count, 'mem_info': x.mem_info, 'rep': reps, 'rep_uid': rep_uid}
-        #             if a not in all_host:
-        #                 all_host.append(a)
-        #         except:
-        #             a = {'hostname': x.hostname, 'ip': x.ip, 'user': x.normal_user, 'port': x.port,
-        #                  'user_group': x.user_group, 'system': x.get_system_display(), 'uid': x.uid,
-        #                  'cpu_count': x.cpu_count, 'mem_info': x.mem_info, 'rep': ' ', 'rep_uid': None}
-        #             if a not in all_host:
-        #                 all_host.append(a)
-        # return render(request, 'index.html', locals())  # 当没有uid的时候获取所有机器信息
-    # else:
-    #     return HttpResponseRedirect('/login/')
 
 
 # 退出页面
@@ -285,7 +168,7 @@ def getServerList(request):
             serializer = Newstagserializer(news, many=True).data
             if status == 'all':
                 for x in serializer:  # 将结果重新组合，把用户备注添加到json中
-                    sort.add(x['user_group'])
+                    sort.add(x['group'])
                     for r in rep:
                         if r.host.uid == x['uid']:
                             x['rep'] = r.rep
@@ -295,10 +178,10 @@ def getServerList(request):
             else:
                 de = []
                 for index, x in enumerate(serializer, 0):  # 将结果重新组合，把用户备注添加到json中
-                    if str(x['user_group']) != status:
+                    if str(x['group']) != status:
                         de.append(index)
                     else:
-                        sort.add(x['user_group'])
+                        sort.add(x['group'])
                         for r in rep:
                             if r.host.uid == x['uid']:
                                 x['rep'] = r.rep
@@ -323,7 +206,7 @@ def getServerList(request):
             serializer = Newstagserializer(s, many=True).data
             if status == 'all':
                 for x in serializer:  # 将结果重新组合，把用户备注添加到json中
-                    sort.add(x['user_group'])
+                    sort.add(x['group'])
                     for r in rep:
                         if r.host.uid == x['uid']:
                             x['rep'] = r.rep
@@ -333,10 +216,10 @@ def getServerList(request):
             else:
                 de = []
                 for index, x in enumerate(serializer, 0):  # 将结果重新组合，把用户备注添加到json中
-                    if str(x['user_group']) != status:
+                    if str(x['group']) != status:
                         de.append(index)
                     else:
-                        sort.add(x['user_group'])
+                        sort.add(x['group'])
                         for r in rep:
                             if r.host.uid == x['uid']:
                                 x['rep'] = r.rep
@@ -455,7 +338,7 @@ def server_modify(request, uid):
                 data = {'uid': value.uid, 'hostname': value.hostname, 'system': value.system, 'ip': value.ip,
                         'intranet_ip': value.intranet_ip, 'user': value.user, 'password': en.decrypt(value.password),
                         'normal_user': value.normal_user, 'normal_pwd': en.decrypt(value.normal_pwd),
-                        'port': value.port, 'user_group': value.user_group}
+                        'port': value.port, 'group': value.group}
                 form = PassWordForm(data)  # 将所有数据填入模板中，并显示到界面上
                 return render(request, 'update.html', locals())
             else:
@@ -552,7 +435,7 @@ def server_import(request):
                     if x == 0:
                         continue
                     cd = {
-                        'user_group': Group.objects.get(name=table.row_values(x)[0]),  # 得到组对象后添加到数据库中
+                        'group': Group.objects.get(name=table.row_values(x)[0]),  # 得到组对象后添加到数据库中
                         'hostname': table.row_values(x)[1],
                         'system': table.row_values(x)[2],
                         'ip': table.row_values(x)[3],
@@ -657,8 +540,8 @@ def serverListHandler(request):
         fl[x.name] = index - 100
         data.append(b)
     for x in host:
-        if x.user_group:
-            data.append({'id': x.uid, 'name': x.hostname, 'ip': x.ip, 'pId': fl[str(x.user_group)]})
+        if x.group:
+            data.append({'id': x.uid, 'name': x.hostname, 'ip': x.ip, 'pId': fl[str(x.group)]})
         else:
             data.append({'id': x.uid, 'name': x.hostname, 'ip': x.ip, 'pId': 0})
     return JsonResponse(json.dumps(data), safe=False)
@@ -1415,6 +1298,7 @@ def super_handler(request):
         return HttpResponseRedirect('/showSupervisor/')
 
 
+# 读取服务器上的配置文件
 def getSuperConf(request):
     sess = request.session.get('user')
     if sess:
@@ -1435,6 +1319,7 @@ def getSuperConf(request):
         return HttpResponseRedirect('/login/')
 
 
+# 保存修改
 def saveSuperConf(request):
     sess = request.session.get('user')
     if sess:
@@ -1464,5 +1349,38 @@ def saveSuperConf(request):
                 ssh.close()
         else:
             return HttpResponseRedirect('/login/')
+    else:
+        return HttpResponseRedirect('/login/')
+
+
+# 批量修改服务器分组信息
+def batch_edit(request):
+    sess = request.session.get('user')
+    if sess:
+        if judgeUserGroup(sess):
+            arr = request.POST.get('arr')
+            action = request.POST.get('action')
+            data = request.POST.get('data')
+            arr = arr.split(',')
+            try:
+                for x in arr:
+                    if action == 'sort':
+                        res = PassWord.objects.get(uid=x)  # 节点id
+                        res.group = Group.objects.get(uid=data)  # 要修改的分组id
+                        res.save()
+                    if action == 'system':
+                        res = PassWord.objects.get(uid=x)  # 节点id
+                        res.system = data  # 要修改的分组id
+                        res.save()
+                    if action == 'port':
+                        res = PassWord.objects.get(uid=x)  # 节点id
+                        res.port = data  # 要修改的分组id
+                        res.save()
+                return JsonResponse({"status": "修改成功"})
+            except:
+                return JsonResponse({"status": "修改失败"})
+        else:
+            return HttpResponseRedirect('/login/')
+
     else:
         return HttpResponseRedirect('/login/')

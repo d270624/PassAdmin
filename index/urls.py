@@ -50,4 +50,6 @@ urlpatterns = [
     path('super/', super_handler, name='super'),
     path('getSuperConf/', getSuperConf, name='getSuperConf'),
     path('saveSuperConf/', saveSuperConf, name='saveSuperConf'),
+    path('batch_edit/', batch_edit, name='batch_edit'),
+
 ]

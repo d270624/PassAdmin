@@ -12,7 +12,7 @@ class PassWordForm(forms.ModelForm):  # 自动生成表单
         self.fields['normal_user'].required = False
         self.fields['normal_pwd'].required = False
         self.fields['port'].required = False
-        self.fields['user_group'].required = False
+        self.fields['group'].required = False
         self.fields['system_info'].required = False
         self.fields['cpu_count'].required = False
         self.fields['cpu_info'].required = False
@@ -36,7 +36,7 @@ class PassWordForm(forms.ModelForm):  # 自动生成表单
             'normal_user': '普通用户',
             'normal_pwd': '密码',
             'port': '端口',
-            'user_group': '分组',
+            'group': '分组',
         }
         widgets = {
             'hostname': forms.TextInput(attrs={
@@ -72,8 +72,7 @@ class PassWordForm(forms.ModelForm):  # 自动生成表单
                 'class': 'form-control',
                 'placeholder': '选填',
             }),
-            'user_group': forms.Select(attrs={'class': 'form-control'}),
-
+            'group': forms.Select(attrs={'class': 'form-control'}),
         }
 
 

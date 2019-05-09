@@ -32,13 +32,13 @@ class PassWord(models.Model):  # 添加服务器类
     ctime = models.DateTimeField(auto_now=True, null=True)  # 时间
     system = models.CharField(max_length=20, null=True, verbose_name='系统', default='Linux', choices=TOPIC_CHOICE)  # 系统
     ip = models.CharField(verbose_name='IP地址', max_length=30, null=True, blank=True)  # ip
-    intranet_ip = models.CharField(verbose_name='IP地址', max_length=30, null=True, blank=True)  # 内网ip
-    user = models.CharField(max_length=20, verbose_name='用户名', null=True, blank=True)  # 账号
+    intranet_ip = models.CharField(verbose_name='内网IP地址', max_length=30, null=True, blank=True)  # 内网ip
+    user = models.CharField(max_length=20, verbose_name='高级用户名', null=True, blank=True)  # 账号
     password = models.CharField(max_length=300, verbose_name='密码', null=True, blank=True)  # 密码
     port = models.IntegerField(default=22, verbose_name='端口', null=True, blank=True)  # 端口
-    normal_user = models.CharField(max_length=20, verbose_name='用户名', null=True, blank=True)  # 普通用户账号
+    normal_user = models.CharField(max_length=20, verbose_name='普通用户名', null=True, blank=True)  # 普通用户账号
     normal_pwd = models.CharField(max_length=300, verbose_name='密码', null=True, blank=True)  # 普通用户密码
-    user_group = models.ForeignKey(Group, null=True, on_delete=models.CASCADE, verbose_name='分组')
+    group = models.ForeignKey(Group, null=True, on_delete=models.CASCADE, verbose_name='分组')
     system_info = models.CharField(max_length=20, verbose_name='系统版本', null=True, blank=True)  # 系统版本
     cpu_count = models.CharField(max_length=100, verbose_name='cpu核心数', null=True, blank=True)  # cpu信息
     cpu_info = models.CharField(max_length=100, verbose_name='cpu信息', null=True, blank=True)  # cpu信息

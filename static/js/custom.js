@@ -88,7 +88,7 @@ function IndexTable(all) {
         pageSize: 10,     //每页需要显示的数据量
         queryParamsType: 'limit',
         pagination: true,
-        singleSelect: true,
+        singleSelect: false,
         clickToSelect: true,
         sortName: "create_time",
         sortOrder: "desc",
@@ -97,7 +97,10 @@ function IndexTable(all) {
         showColumns: true, //是否显示所有的列
         toolbar: "#toolbar",
         columns: [{
-            field: 'user_group',
+            checkbox: true,
+            visible: true                  //是否显示复选框
+        }, {
+            field: 'group',
             title: '分类',
             switchable: true,
             sortable: true,
@@ -559,8 +562,82 @@ $(function () {
     });
     $('#myModal3').on('hide.bs.modal', function () {
         location.reload();
+    });
+    $('#pModal').on('hide.bs.modal', function () {
+        location.reload();
+    });
+    $('#pModal').on('show.bs.modal', function () {
+        toastr.options.positionClass = 'toast-top-center';
+        let row = $('#table').bootstrapTable('getSelections');
+        if (row.length < 1) {
+            toastr.error("未选择节点，请选择节点");
+        }
     })
 
 });
 
+$('#operation').change(function () {
+    let res = $(this).children('option:selected').val();
+    if (res === "sort") {
+        $('#selects').show();
+        $('#sys_select').hide();
+        $('#sname').text('分组名称:');
+        $('#itext').attr('type', 'hidden');
+    }
+    if (res === "system") {
+        $('#selects').hide();
+        $('#sys_select').show();
+        $('#sname').text('系统名称:');
+        $('#itext').attr('type', 'hidden');
+    }
+    if (res === "port") {
+        $('#selects').hide();
+        $('#sys_select').hide();
+        $('#sname').text('新的端口:');
+        $('#itext').attr('type', 'text');
+        $('#itext').attr('style', 'width:150px');
+    }
+});
 
+$('#batch_save').click(function () {
+    let action = $('#operation').children('option:selected').val();
+    let formData = new FormData();
+    let row = $('#table').bootstrapTable('getSelections');
+    if (row.length < 1) {
+        toastr.error("未选择节点，请选择节点");
+        return;
+    }
+    let arr = [];
+    for (let i = 0; i < row.length; i++) {
+        arr.push(row[i].uid);
+    }
+    formData.append("arr", arr);
+    formData.append("action", action);
+    if (action === 'sort') {
+        let data = $('#selects').children('option:selected').val();
+        formData.append("data", data);
+    }
+    if (action === 'system') {
+        let data = $('#sys_select').children('option:selected').val();
+        formData.append('data', data);
+    }
+    if (action === 'port') {
+        let data = $('#itext').val();
+        formData.append('data', data);
+    }
+    $.ajax({
+        type: "post",
+        contentType: false,
+        processData: false,
+        data: formData,
+        url: "/batch_edit/",
+        dataType: "json",
+        success: function (data) {
+            if(data.status === "修改失败") {
+                toastr.error(data.status);
+            } else {
+                toastr.success(data.status);
+            }
+        }
+    });
+});
