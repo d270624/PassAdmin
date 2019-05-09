@@ -1,0 +1,5 @@
+Pycharm使用Git进行版本管理时遇到不需纳入管理的文件冲突时的解决方法
+git rm -r --cached .
+git add .
+git commit -m "update .gitignore"
+https://cloud.tencent.com/developer/news/51816
