@@ -10,3 +10,4 @@ index/migrations/
 index/tools/__pycache__/
 index/tools/channel/__pycache__/
 upload/
+/PassAdmin/settings.py
