@@ -5578,15 +5578,15 @@ a.thumbnail.active, a.thumbnail:focus, a.thumbnail:hover {
 .list-group-item {
     position: relative;
     display: block;
-    padding: 2px 15px;
+    padding: 5px 15px;
     margin-bottom: -1px;
     background-color: #fff;
-    border: 1px solid #ddd
+    border: 1px solid rgb(204, 204, 204)
 }
 
 .list-group-item:first-child {
-    border-top-left-radius: 4px;
-    border-top-right-radius: 4px
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px
 }
 
 .list-group-item:last-child {
