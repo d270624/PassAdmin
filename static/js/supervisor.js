@@ -1,5 +1,6 @@
 let formData = new FormData();
 formData.append('status', 'list');
+let tree = $('#tree');
 $.ajax({
     type: "post",
     contentType: false,
@@ -8,11 +9,10 @@ $.ajax({
     url: "/showSupervisor/",
     dataType: "json",
     success: function (data) {
-        $('#tree').treeview({data: data});
-        $('#tree').treeview('selectNode', [0, {silent: true}]);
-        $('#tree').on('nodeSelected', function (event, data) {
-            $('#table').bootstrapTable('destroy');
-            table('first', data.id)
+        tree.treeview({data: data});
+        tree.treeview('selectNode', [0, {silent: true}]);
+        tree.on('nodeSelected', function (event, data) {
+            table_append('first', data.id)
         });
     }
 });
@@ -121,6 +121,27 @@ function table(status, data) {
     });
 }
 
+function table_append(status, data) {
+    $('#table').bootstrapTable('removeAll');
+    let formData = new FormData();
+    formData.append('status', status);
+    formData.append('id', data);
+    $.ajax({
+        type: "post",
+        contentType: false,
+        processData: false,
+        data: formData,
+        url: "/showSupervisor/",
+        dataType: "json",
+        success: function (data) {
+            for (let i = 0; i < data.length; i++) {
+                let dataTree = data[i];
+                $('#table').bootstrapTable('append', dataTree);
+            }
+        }
+    });
+}
+
 function operation(value, row, index) {
     var result = "";
     result += '<a style="margin-right: 10px;display: inline" href="/super?id=' + row.id + '&processname=' + row.name + '&action=restart">Restart</a>';
@@ -209,6 +230,7 @@ $('#confModal').on('show.bs.modal', function () {
     });
 });
 
+//修改配置点击事件
 $('#modify').click(function () {
     let content = $('#view').val();
     let data = new FormData();
@@ -232,4 +254,42 @@ $('#modify').click(function () {
             }
         }
     });
-})
+});
+
+//添加进程名搜索按钮和搜索框
+$('.fixed-table-toolbar').append('<input type="input" class="form-control" id="name-search" placeholder="所有字段搜索" ' +
+    'value="" style="position:absolute;right:35px;top: 58px;border:1px solid #286090;">');
+$('.fixed-table-toolbar').append('<button type="input" class="btn btn-primary" ' +
+    'id="name-btn" style="position:absolute;right:15px;top: 58px;">搜索</button>');
+
+//搜索事件
+$('#name-btn').click(
+    function search() {
+        let name = $('#name-search').val();
+        let data = new FormData();
+        data.append('name', name);
+        $.ajax({
+            type: "post",
+            contentType: false,
+            processData: false,
+            data: data,
+            url: "/searchSuperConf/",
+            dataType: "json",
+            success: function (data) {
+                if (data.length > 0) {
+                    tree.treeview({data: data});
+                    tree.treeview('selectNode', [0, {silent: true}]);
+                    table_append('first', data[0].id);
+                    tree.on('nodeSelected', function (event, data) {
+                        table_append('first', data.id)
+                    });
+                } else {
+                    tree.treeview('remove');
+                    $('#table').bootstrapTable('removeAll');
+                }
+            }
+        });
+    }
+);
+
+

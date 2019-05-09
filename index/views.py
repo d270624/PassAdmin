@@ -359,6 +359,39 @@ def server_modify(request, uid):
         return HttpResponseRedirect('/login/')
 
 
+# 批量修改服务器分组信息
+def batch_edit(request):
+    sess = request.session.get('user')
+    if sess:
+        if judgeUserGroup(sess):
+            arr = request.POST.get('arr')
+            action = request.POST.get('action')
+            data = request.POST.get('data')
+            arr = arr.split(',')
+            try:
+                for x in arr:
+                    if action == 'sort':
+                        res = PassWord.objects.get(uid=x)  # 节点id
+                        res.group = Group.objects.get(uid=data)  # 要修改的分组id
+                        res.save()
+                    if action == 'system':
+                        res = PassWord.objects.get(uid=x)  # 节点id
+                        res.system = data  # 要修改的分组id
+                        res.save()
+                    if action == 'port':
+                        res = PassWord.objects.get(uid=x)  # 节点id
+                        res.port = data  # 要修改的分组id
+                        res.save()
+                return JsonResponse({"status": "修改成功"})
+            except:
+                return JsonResponse({"status": "修改失败"})
+        else:
+            return HttpResponseRedirect('/login/')
+
+    else:
+        return HttpResponseRedirect('/login/')
+
+
 # 修改全部密码
 def server_pwd_change(request):
     sess = request.session.get('user')
@@ -1353,34 +1386,26 @@ def saveSuperConf(request):
         return HttpResponseRedirect('/login/')
 
 
-# 批量修改服务器分组信息
-def batch_edit(request):
+# 搜索进程名（暂时不想改多线程）
+def searchSuperConf(request):
     sess = request.session.get('user')
     if sess:
         if judgeUserGroup(sess):
-            arr = request.POST.get('arr')
-            action = request.POST.get('action')
-            data = request.POST.get('data')
-            arr = arr.split(',')
-            try:
-                for x in arr:
-                    if action == 'sort':
-                        res = PassWord.objects.get(uid=x)  # 节点id
-                        res.group = Group.objects.get(uid=data)  # 要修改的分组id
-                        res.save()
-                    if action == 'system':
-                        res = PassWord.objects.get(uid=x)  # 节点id
-                        res.system = data  # 要修改的分组id
-                        res.save()
-                    if action == 'port':
-                        res = PassWord.objects.get(uid=x)  # 节点id
-                        res.port = data  # 要修改的分组id
-                        res.save()
-                return JsonResponse({"status": "修改成功"})
-            except:
-                return JsonResponse({"status": "修改失败"})
+            name = request.POST.get('name')
+            sup = supervisor.objects.all()
+            data = []
+            for res in sup:
+                if res.ip.intranet_ip is None:
+                    ip = res.ip.ip
+                else:
+                    ip = res.ip.intranet_ip
+                supers = superv(ip=ip, user=res.user, password=res.password, port=res.port)
+                process_info = supers.getAllProcessInfo()
+                if name in str(process_info):
+                    data.append({'text': ip, 'id': res.id})
+            data = json.dumps(data)
+            return HttpResponse(data)
         else:
             return HttpResponseRedirect('/login/')
-
     else:
         return HttpResponseRedirect('/login/')
