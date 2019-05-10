@@ -1,22 +1,22 @@
-from django.http import HttpResponseRedirect
-from django.shortcuts import render, HttpResponse
-from django.http import JsonResponse
-from django.contrib import messages
+# from multiprocessing import cpu_count
+# import django.utils.timezone as timezone
 from urllib import parse
-from .tools import tools
-from .forms import *
-from .connect import *
-import os, time, json
-from index.supervisors import superv
-import django.utils.timezone as timezone
-import threading
+
 # 定时任务模块
 from apscheduler.schedulers.background import BackgroundScheduler
-from .serializers import *
-from multiprocessing import cpu_count
-import logging
+from django.contrib import messages
 # 分页模块
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.http import HttpResponseRedirect
+from django.http import JsonResponse
+from django.shortcuts import render, HttpResponse
+
+from index.supervisors import superv
+from .connect import *
+from .forms import *
+from .serializers import *
+from .tools import tools
+from .publicQueue import *
 
 # 日志
 mylog = logging.getLogger('django.server')
@@ -602,10 +602,10 @@ def serverBatchRun(request):
                     run_linux.setHostQueue(hostname, ip, user, pwd, port, cmd)  # 将节点添加到队列中
 
                 thread_list = []
-                for i in range(cpu_count() * 2):
+                for i in range(10):
                     threadrun = threading.Thread(target=run_linux.runQueue)
                     thread_list.append(threadrun)
-                for i in range(cpu_count() * 2):
+                for i in range(10):
                     threadlogs = threading.Thread(target=run_linux.getlogs)
                     thread_list.append(threadlogs)
                 for th in thread_list:
@@ -1247,7 +1247,7 @@ def showSupervisor(request):
                     ip = x.ip.ip
                 else:
                     ip = x.ip.intranet_ip
-                sup = superv(ip=ip, user=x.user, password=x.password, port=x.port)
+                sup = superv({'ip': ip, 'user': x.user, 'password': x.password, 'port': x.port})
                 data = sup.getAllProcessInfo()  # 获取服务器所有信息
                 for i in data:
                     i['id'] = x.id
@@ -1260,7 +1260,7 @@ def showSupervisor(request):
                 ip = res.ip.ip
             else:
                 ip = res.ip.intranet_ip
-            sup = superv(ip=ip, user=res.user, password=res.password, port=res.port)
+            sup = superv({'ip': ip, 'user': res.user, 'password': res.password, 'port': res.port})
             data = sup.getAllProcessInfo()
             for i in data:
                 i['id'] = res.id
@@ -1282,7 +1282,7 @@ def super_handler(request):
         ip = res.ip.ip
     else:
         ip = res.ip.intranet_ip
-    sup = superv(ip=ip, user=res.user, password=res.password, port=res.port)
+    sup = superv({'ip': ip, 'user': res.user, 'password': res.password, 'port': res.port})
     if action == 'restart':
         sup.restart(processname)
         messages.success(request, "重启成功")
@@ -1393,17 +1393,30 @@ def searchSuperConf(request):
         if judgeUserGroup(sess):
             name = request.POST.get('name')
             sup = supervisor.objects.all()
-            data = []
+
+            ge = generals()
             for res in sup:
                 if res.ip.intranet_ip is None:
                     ip = res.ip.ip
                 else:
                     ip = res.ip.intranet_ip
-                supers = superv(ip=ip, user=res.user, password=res.password, port=res.port)
-                process_info = supers.getAllProcessInfo()
-                if name in str(process_info):
-                    data.append({'text': ip, 'id': res.id})
-            data = json.dumps(data)
+                super_api = {'id': res.id, 'ip': ip, 'user': res.user, 'password': res.password, 'port': res.port}
+                ge.put(super_api)
+            thread_list = []
+            operation = '''if "''' + name + '''".lower() in str(result).lower(): self.temp = {'text': host['ip'], 'id': host['id']}'''
+            for i in range(10):
+                thread_run = threading.Thread(target=ge.run, args=(superv, 'getAllProcessInfo', operation))
+                thread_list.append(thread_run)
+            for i in range(10):
+                thread_log = threading.Thread(target=ge.get_log)
+                thread_list.append(thread_log)
+            for th in thread_list:
+                th.setDaemon(True)
+                th.start()
+
+            ge.allQueue.join()  # 阻塞等待结束
+            ge.logQueue.join()  # 阻塞等待结束
+            data = json.dumps(ge.log)
             return HttpResponse(data)
         else:
             return HttpResponseRedirect('/login/')

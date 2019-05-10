@@ -3,7 +3,11 @@ import xmlrpc
 
 
 class superv:
-    def __init__(self, ip, user, password, port=9001):
+    def __init__(self, kwargs):
+        user = kwargs.get('user')
+        password = kwargs.get('password')
+        ip = kwargs.get('ip')
+        port = kwargs.get('port')
         self.server = ServerProxy('http://' + user + ':' + password + '@' + ip + ':' + str(port) + '/RPC2')
 
     def start(self, name):
