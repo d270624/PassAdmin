@@ -24,8 +24,8 @@ class generals:
         """
         while True:
             host = self.allQueue.get()  # 2.1 取出队列中的数据
-            result = handlerName(host)  # 2.2 执行
-            result = eval("result." + methodName + "()")  # 执行提供的方法名
+            result = handlerName(host)  # 2.2 执行,类初始化
+            result = eval("result." + methodName + "()")  # 2.3 执行提供的方法名
             if operation:
                 exec(operation)  # 处理额外添加的程序，将执行结果存放在self.temp中
                 if self.temp:
