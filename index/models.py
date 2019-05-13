@@ -10,6 +10,12 @@ TOPIC_CHOICE = (
     ('level2', 'Windows'),
     ('level3', '其他'))
 
+Project_CHOICE = (
+    ('level1', '开发'),
+    ('level2', '测试'),
+    ('level3', '预发'),
+    ('level4', '正式'),)
+
 
 class Group(models.Model):  # 添加服务器分组类
     def __str__(self):
@@ -94,6 +100,7 @@ class Project(models.Model):
         return self.name
 
     uid = models.AutoField(primary_key=True)
+    category = models.CharField(max_length=20, verbose_name='类别', default='开发', choices=Project_CHOICE)
     name = models.CharField(max_length=50, verbose_name='项目名称')
     host = models.ForeignKey(PassWord, null=True, on_delete=models.CASCADE, verbose_name='服务器')
     template = models.ForeignKey(Object, on_delete=models.CASCADE, verbose_name='模板')

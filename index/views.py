@@ -890,7 +890,8 @@ def project(request):
             value = Object.objects.all()
             return render(request, 'project.html', locals())
         else:
-            pro = Project.objects.all()
+            category = request.POST.get('category')
+            pro = Project.objects.filter(category=category)
             serializer = projectSer(pro, many=True).data
             return JsonResponse({'rows': serializer})
     else:

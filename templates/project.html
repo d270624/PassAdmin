@@ -24,9 +24,15 @@
     </div>
     <!-- 工具容器 -->
     <div id="toolbar" class="btn-group">
-        <button id="btn_delete" type="button" class="btn btn-default" onclick='window.location.href="http://127.0.0.1:8000/admin/"'>
-            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>新增
-        </button>
+        {#        <button id="btn_delete" type="button" class="btn btn-default" onclick='window.location.href="http://127.0.0.1:8000/admin/"'>#}
+        {#            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>新增#}
+        {#        </button>#}
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="javascript:void(0);" onclick="choice('level1')">开发</a></li>
+            <li><a href="javascript:void(0);" onclick="choice('level2')">测试</a></li>
+            <li><a href="javascript:void(0);" onclick="choice('level3')">预发</a></li>
+            <li><a href="javascript:void(0);" onclick="choice('level4')">生产</a></li>
+        </ul>
     </div>
 
     <!--项目部署弹框 -->
@@ -104,7 +110,7 @@
         });
         $(document).ready(function () {
             $('#project').attr('class', 'active-menu');
-            projectTable();
+            projectTable('level1');
             $('#pro').draggable();//设置可以拖动
         });
     </script>

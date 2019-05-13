@@ -1,4 +1,7 @@
-function projectTable() {
+function projectTable(category) {
+    let formData = new FormData();
+    formData.append("category", category);
+
     $('#table').bootstrapTable({
         url: '/project/',
         method: 'POST',
@@ -11,7 +14,7 @@ function projectTable() {
         sortName: "create_time",
         sortOrder: "desc",
         pageList: "[10, 25, 50, 100, All]",
-        // toolbar: '#toolbar',
+        toolbar: '#toolbar',
         search: true,
 
         columns: [{
@@ -53,6 +56,7 @@ function projectTable() {
         }],
         queryParams: function (params) {
             return {
+                category: category,
                 pageSize: params.limit, //每一页的数据行数，默认是上面设置的10(pageSize)
                 pageNumber: params.offset / params.limit + 1, //当前页面,默认是上面设置的1(pageNumber)
             }
@@ -197,4 +201,17 @@ function WebSocketPublic() {
         // 浏览器不支持 WebSocket
         alert("您的浏览器不支持 WebSocket!");
     }
+}
+
+
+function choice(category) {
+    var elements = document.querySelectorAll('.nav.nav-tabs li');
+    //数组是of,对象是in
+    for (let item of elements) {
+        item.className = ''
+    }
+    let obj = event.srcElement.parentNode;
+    obj.setAttribute("class", "active");
+     $('#table').bootstrapTable('destroy');
+    projectTable(category)
 }
