@@ -704,24 +704,18 @@ def webssh(request, uid):
                     ip = data.ip
                 else:
                     ip = data.intranet_ip
-
-                data = {'host': '106.14.217.0',
-                        'port': '10086',
-                        'user': 'root',
-                        'auth': 'pwd',
-                        'password': en.decrypt('GKWsqRTEme')}
-                # if judgeUserGroup(sess):
-                #     data = {'host': ip,
-                #             'port': data.port,
-                #             'user': data.user,
-                #             'auth': 'pwd',
-                #             'password': en.decrypt(data.password)}
-                # else:
-                #     data = {'host': ip,
-                #             'port': data.port,
-                #             'user': data.normal_user,
-                #             'auth': 'pwd',
-                #             'password': en.decrypt(data.normal_pwd)}
+                if judgeUserGroup(sess):
+                    data = {'host': ip,
+                            'port': data.port,
+                            'user': data.user,
+                            'auth': 'pwd',
+                            'password': en.decrypt(data.password)}
+                else:
+                    data = {'host': ip,
+                            'port': data.port,
+                            'user': data.normal_user,
+                            'auth': 'pwd',
+                            'password': en.decrypt(data.normal_pwd)}
                 password = data.get('password')
                 password = base64.b64encode(password.encode('utf-8'))  # 编码
                 data['password'] = password.decode('utf-8')

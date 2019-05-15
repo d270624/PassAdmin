@@ -50,7 +50,6 @@ class SSH:
                 self.message['message'] = recv
                 message = json.dumps(self.message)
                 self.websocker.send(message)
-            self.channel.send('ssh 139.219.110.189 -p 10086 ')
 
         except socket.timeout as e:
             self.message['status'] = 1
