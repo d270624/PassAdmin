@@ -17,6 +17,8 @@ from .forms import *
 from .serializers import *
 from .tools import tools
 from .publicQueue import *
+import json
+import threading
 
 # 日志
 mylog = logging.getLogger('django.server')
@@ -290,21 +292,22 @@ def server_add(request, uid=None):
         if str(user_group) == "AdminGroup":
             if request.method == 'GET':
                 form = PassWordForm()
-                return render(request, 'form.html', locals())
+                return render(request, 'add_host.html', locals())
             else:
                 form = PassWordForm(request.POST)
                 if form.is_valid():
                     cd = form.cleaned_data
-                    # print(cd['password'])
-                    # print(en.encryption(cd['password']))
                     cd['password'] = en.encryption(cd['password'])
-                    cd['normal_pwd'] = en.encryption(cd['normal_pwd'])
+                    if upRsaPub(ip=cd['ip'], username=cd['user'], password=cd['password'], port=cd['port']):
+                        cd['status'] = '正常'
+                    else:
+                        cd['status'] = '异常'
                     PassWord(**cd).save()
                     mes = '添加成功'
-                    return render(request, 'form.html', locals())
+                    return render(request, 'add_host.html', locals())
                 else:
                     mes = '信息填写有误'
-                    return render(request, 'form.html', locals())
+                    return render(request, 'add_host.html', locals())
     return HttpResponseRedirect('/login/')
 
 
@@ -340,7 +343,7 @@ def server_modify(request, uid):
                         'normal_user': value.normal_user, 'normal_pwd': en.decrypt(value.normal_pwd),
                         'port': value.port, 'group': value.group}
                 form = PassWordForm(data)  # 将所有数据填入模板中，并显示到界面上
-                return render(request, 'update.html', locals())
+                return render(request, 'modify_host.html', locals())
             else:
                 form = PassWordForm(request.POST)  # 将数据放到Form里面
                 if form.is_valid():
@@ -349,10 +352,10 @@ def server_modify(request, uid):
                     cd['normal_pwd'] = en.encryption(cd['normal_pwd'])
                     PassWord.objects.filter(uid=uid).update(**cd)  # 更新数据
                     mes = '修改成功'
-                    return render(request, 'update.html', locals())
+                    return render(request, 'modify_host.html', locals())
                 else:
                     mes = '信息填写有误'
-                    return render(request, 'form.html', locals())
+                    return render(request, 'add_host.html', locals())
         else:
             return HttpResponseRedirect('/login/')
     else:
@@ -701,18 +704,24 @@ def webssh(request, uid):
                     ip = data.ip
                 else:
                     ip = data.intranet_ip
-                if judgeUserGroup(sess):
-                    data = {'host': ip,
-                            'port': data.port,
-                            'user': data.user,
-                            'auth': 'pwd',
-                            'password': en.decrypt(data.password)}
-                else:
-                    data = {'host': ip,
-                            'port': data.port,
-                            'user': data.normal_user,
-                            'auth': 'pwd',
-                            'password': en.decrypt(data.normal_pwd)}
+
+                data = {'host': '106.14.217.0',
+                        'port': '10086',
+                        'user': 'root',
+                        'auth': 'pwd',
+                        'password': en.decrypt('GKWsqRTEme')}
+                # if judgeUserGroup(sess):
+                #     data = {'host': ip,
+                #             'port': data.port,
+                #             'user': data.user,
+                #             'auth': 'pwd',
+                #             'password': en.decrypt(data.password)}
+                # else:
+                #     data = {'host': ip,
+                #             'port': data.port,
+                #             'user': data.normal_user,
+                #             'auth': 'pwd',
+                #             'password': en.decrypt(data.normal_pwd)}
                 password = data.get('password')
                 password = base64.b64encode(password.encode('utf-8'))  # 编码
                 data['password'] = password.decode('utf-8')

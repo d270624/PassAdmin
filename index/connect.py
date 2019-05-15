@@ -1,10 +1,8 @@
 import random, string, paramiko, xlwt
-# from ftplib import FTP
 import telnetlib
 import xlrd
 import re
 import os
-from index.tools.channel.tailf import *
 from queue import Queue as LinxQueue
 from index.Rsa import *
 import socket
@@ -100,23 +98,20 @@ def ssh(ip, port, username, password, new_password):
         ssh_.close()
 
 
-with open('./index/id_rsa.pub', 'r') as f:
-    id_rsa_pub = f.read()
-
-
 # 上传公钥
-def upload(ip, username, password, port):
+def upRsaPub(ip, username, password, port):
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     try:
         ssh.connect(hostname=ip, username=username, password=password, port=port)
         stdin, stdout, stderr = ssh.exec_command('cat ~/.ssh/authorized_keys')
+        id_rsa_pub = os.popen('cat ~/.ssh/id_rsa.pub').read()
         if id_rsa_pub[10:30] not in str(stdout.read()):
             ssh.exec_command('echo ' + id_rsa_pub + ' >> ~/.ssh/authorized_keys')
         else:
-            return 1
+            return True
     except:
-        return 0
+        return False
     finally:
         ssh.close()
 
@@ -151,12 +146,10 @@ def progress_bar(a, b):
 def upfile(ip, username, password, port, filename):
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    mylog.info("upload/" + filename)
-    mylog.info('/' + username + '/' + filename)
     try:
         ssh.connect(hostname=ip, username=username, password=password, port=port, timeout=15)
         ftp = ssh.open_sftp()
-        ftp.put("upload/" + filename, '~/' + filename,
+        ftp.put("upload/" + filename, filename,
                 callback=progress_bar)  # 上传文件,callback=progress_bar
         ftp.close()
         ssh.close()

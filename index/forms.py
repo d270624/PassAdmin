@@ -9,8 +9,6 @@ class PassWordForm(forms.ModelForm):  # 自动生成表单
         self.fields['ip'].required = False
         self.fields['user'].required = False
         self.fields['password'].required = False
-        self.fields['normal_user'].required = False
-        self.fields['normal_pwd'].required = False
         self.fields['port'].required = False
         self.fields['group'].required = False
         self.fields['system_info'].required = False
@@ -33,8 +31,6 @@ class PassWordForm(forms.ModelForm):  # 自动生成表单
             'intranet_ip': '内网IP',
             'user': '用户名',
             'password': '密码',
-            'normal_user': '普通用户',
-            'normal_pwd': '密码',
             'port': '端口',
             'group': '分组',
         }
@@ -57,14 +53,6 @@ class PassWordForm(forms.ModelForm):  # 自动生成表单
                 'placeholder': '选填',
             }),
             'password': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': '选填',
-            }),
-            'normal_user': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': '选填',
-            }),
-            'normal_pwd': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': '选填',
             }),
