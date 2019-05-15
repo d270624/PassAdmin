@@ -757,15 +757,9 @@ def ufile(request):
                 ip = obj.ip
             else:
                 ip = obj.intranet_ip
-            if judgeUserGroup(sess):
-                user = obj.user
-                pwd = en.decrypt(obj.password)
-                pdd = 1
-            else:
-                user = obj.normal_user
-                pwd = en.decrypt(obj.normal_pwd)
-                pdd = 0
-            if upfile(ip, user, pwd, obj.port, path.name, pdd):
+            user = obj.user
+            pwd = en.decrypt(obj.password)
+            if upfile(ip, user, pwd, obj.port, path.name):
                 os.remove(os.path.join("upload", path.name))
                 data = {'status': 1}  # ajax上传成功
                 return JsonResponse(data)

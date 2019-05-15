@@ -61,7 +61,6 @@ class WebSSH(WebsocketConsumer):
                     pty_height=height
                 )
             else:
-                print('pwd')
                 self.ssh.connect(
                     host=host,
                     user=user,
