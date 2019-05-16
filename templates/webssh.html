@@ -13,11 +13,11 @@
     {% csrf_token %}
     <div id="terminal"></div>
 </div>
-<script>
-    webssh({{id}})
-</script>
 <script src="/static/jquery.min.js"></script>
 <script src="/static/xterm/xterm.js"></script>
 <script src="/static/webssh.js"></script>
+<script>
+    webssh({{id}})
+</script>
 </body>
 </html>
