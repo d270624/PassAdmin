@@ -7,7 +7,9 @@ from threading import Thread
 import time
 import os
 from index.Rsa import *
+
 en = RsaChange()
+
 
 class webssh_socket:
     def __init__(self, websocker, message, webuser, host, width=80, height=24):
@@ -36,7 +38,7 @@ class webssh_socket:
                            en.decrypt(host.password),
                            timeout=30)
             self.chan = client.invoke_shell()
-            self.chan.resize_pty(width=width, height=height)
+            self.chan.get_pty(term='xterm', width=width, height=height)
             time.sleep(0.5)
             recv = self.chan.recv(2048).decode('utf-8')
             self.message['status'] = 0
