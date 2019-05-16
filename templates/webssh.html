@@ -14,30 +14,7 @@
     <div id="terminal"></div>
 </div>
 <script>
-    window.onload = function post_data() {
-        var csrf = $("[name='csrfmiddlewaretoken']").val();
-        $.ajax({
-            url: "/webssh/" + "{{uid}}",
-            type: "POST",
-            data: {'csrfmiddlewaretoken': csrf},
-            async: false,
-            success: function (result) {
-                var obj = result;
-                var code = obj.code;
-                if (code === 0) {
-                    unique = obj.message;
-                } else {
-                    var error = obj.error;
-                    alert(error);
-                }
-            }
-        });
-
-        if (unique !== null) {
-            webssh(unique)
-        }
-    }
-
+    webssh({{id}})
 </script>
 <script src="/static/jquery.min.js"></script>
 <script src="/static/xterm/xterm.js"></script>

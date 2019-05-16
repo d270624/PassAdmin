@@ -298,10 +298,10 @@ def server_add(request, uid=None):
                 if form.is_valid():
                     cd = form.cleaned_data
                     cd['password'] = en.encryption(cd['password'])
-                    if upRsaPub(ip=cd['ip'], username=cd['user'], password=cd['password'], port=cd['port']):
-                        cd['status'] = '正常'
-                    else:
-                        cd['status'] = '异常'
+                    # if upRsaPub(ip=cd['ip'], username=cd['user'], password=cd['password'], port=cd['port']):
+                    #     cd['status'] = '正常'
+                    # else:
+                    #     cd['status'] = '异常'
                     PassWord(**cd).save()
                     mes = '添加成功'
                     return render(request, 'add_host.html', locals())
@@ -683,58 +683,11 @@ def delServerTemplate(request):
 
 
 # 远程连接处理程序
-def webssh(request, uid):
+def webssh(request, id):
     sess = request.session.get('user')
     if sess:
         if request.method == 'GET':
             return render(request, 'webssh.html', locals())
-        if request.method == 'POST':
-            success = {'code': 0, 'message': None, 'error': None}
-            try:
-                # post_data = request.POST.get('data')
-                # data = json.loads(post_data)
-                # auth = data.get('auth')
-                # if auth == 'key':
-                #     pkey = request.FILES.get('pkey')
-                #     key_content = pkey.read().decode('utf-8')
-                #     data['pkey'] = key_content
-                # else:
-                data = PassWord.objects.get(uid=int(uid))
-                if data.intranet_ip is None:
-                    ip = data.ip
-                else:
-                    ip = data.intranet_ip
-                if judgeUserGroup(sess):
-                    data = {'host': ip,
-                            'port': data.port,
-                            'user': data.user,
-                            'auth': 'pwd',
-                            'password': en.decrypt(data.password)}
-                else:
-                    data = {'host': ip,
-                            'port': data.port,
-                            'user': data.normal_user,
-                            'auth': 'pwd',
-                            'password': en.decrypt(data.normal_pwd)}
-                password = data.get('password')
-                password = base64.b64encode(password.encode('utf-8'))  # 编码
-                data['password'] = password.decode('utf-8')
-                unique = tools.unique()
-                data['unique'] = unique
-                valid_data = tools.ValidationData(data)  # 将字段存进数据库
-                if valid_data.is_valid():
-                    valid_data.save()
-                    success['message'] = unique
-                else:
-                    error_json = valid_data.errors.as_json()
-                    success['code'] = 1
-                    success['error'] = error_json
-                return JsonResponse(success)
-            except:
-                success['code'] = 1
-                success['error'] = '发生未知错误'
-                return JsonResponse(success)
-
     else:
         return HttpResponseRedirect('/login/')
 
@@ -808,32 +761,18 @@ def down_handler(request):
 def getXshell(request, uid):
     sess = request.session.get('user')
     if sess:
-        if judgeUserGroup(sess):
-            value = PassWord.objects.get(uid=int(uid))  # 得到指定uid主机的所有信息
-            if value.ip is None:
-                ip = value.intranet_ip
-            else:
-                ip = value.ip
-            if value.normal_pwd == None or value.normal_user == None:
-                return HttpResponse("<html><script>alert('该服务器普通账号或密码没有设置，请联系管理员')</script></html>")
-            else:
-                response = HttpResponse("", status=302)
-                response['Location'] = "ssh://" + value.user + ":" + parse.quote(en.decrypt(
-                    value.password)) + "@" + ip + ":" + str(value.port)
-                return response
+        value = PassWord.objects.get(uid=int(uid))  # 得到指定uid主机的所有信息
+        if value.ip is None:
+            ip = value.intranet_ip
         else:
-            value = PassWord.objects.get(uid=int(uid))  # 得到指定uid主机的所有信息
-            if value.ip is None:
-                ip = value.intranet_ip
-            else:
-                ip = value.ip
-            if value.normal_pwd == None or value.normal_user == None:
-                return HttpResponse("<html><script>alert('该服务器普通账号或密码没有设置，请联系管理员')</script></html>")
-            else:
-                response = HttpResponse("", status=302)
-                response['Location'] = "ssh://" + value.normal_user + ":" + parse.quote(en.decrypt(
-                    value.password)) + "@" + ip + ":" + str(value.port)
-                return response
+            ip = value.ip
+        if value.normal_pwd is None or value.normal_user is None:
+            return HttpResponse("<html><script>alert('该服务器普通账号或密码没有设置，请联系管理员')</script></html>")
+        else:
+            response = HttpResponse("", status=302)
+            response['Location'] = "ssh://" + value.user + ":" + parse.quote(en.decrypt(
+                value.password)) + "@" + ip + ":" + str(value.port)
+            return response
     else:
         return HttpResponseRedirect('/login/')
 
@@ -842,32 +781,18 @@ def getXshell(request, uid):
 def getXftp(request, uid):
     sess = request.session.get('user')
     if sess:
-        if judgeUserGroup(sess):
-            value = PassWord.objects.get(uid=int(uid))  # 得到指定uid主机的所有信息
-            if value.ip is None:
-                ip = value.intranet_ip
-            else:
-                ip = value.ip
-            if value.normal_pwd == None or value.normal_user == None:
-                return HttpResponse("<html><script>alert('该服务器普通账号或密码没有设置，请联系管理员')</script></html>")
-            else:
-                response = HttpResponse("", status=302)
-                response['Location'] = "sftp://" + value.user + ":" + parse.quote(en.decrypt(
-                    value.password)) + "@" + ip + ":" + str(value.port)
-                return response
+        value = PassWord.objects.get(uid=int(uid))  # 得到指定uid主机的所有信息
+        if value.ip is None:
+            ip = value.intranet_ip
         else:
-            value = PassWord.objects.get(uid=int(uid))  # 得到指定uid主机的所有信息
-            if value.ip is None:
-                ip = value.intranet_ip
-            else:
-                ip = value.ip
-            if value.normal_pwd == None or value.normal_user == None:
-                return HttpResponse("<html><script>alert('该服务器普通账号或密码没有设置，请联系管理员')</script></html>")
-            else:
-                response = HttpResponse("", status=302)
-                response['Location'] = "sftp://" + value.normal_user + ":" + parse.quote(en.decrypt(
-                    value.password)) + "@" + ip + ":" + str(value.port)
-                return response
+            ip = value.ip
+        if value.normal_pwd is None or value.normal_user is None:
+            return HttpResponse("<html><script>alert('该服务器普通账号或密码没有设置，请联系管理员')</script></html>")
+        else:
+            response = HttpResponse("", status=302)
+            response['Location'] = "sftp://" + value.user + ":" + parse.quote(en.decrypt(
+                value.password)) + "@" + ip + ":" + str(value.port)
+            return response
     else:
         return HttpResponseRedirect('/login/')
 

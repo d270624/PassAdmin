@@ -1,10 +1,7 @@
 from channels.generic.websocket import WebsocketConsumer
-from index.tools.ssh import SSH
 from django.http.request import QueryDict
-from index import models
-from django.utils.six import StringIO
-import json
-import base64
+from index.tools.webssh import *
+from index.models import PassWord
 
 
 class WebSSH(WebsocketConsumer):
@@ -25,50 +22,14 @@ class WebSSH(WebsocketConsumer):
             query_string = self.scope['query_string']
             connet_argv = QueryDict(query_string=query_string, encoding='utf-8')
             webuser = connet_argv.get('user')
-            unique = connet_argv.get('unique')
+            id = connet_argv.get('id')
+            host = PassWord.objects.get(uid=int(id))
             width = connet_argv.get('width')
             height = connet_argv.get('height')
             width = int(width)
             height = int(height)
-            connect_info = models.HostTmp.objects.get(unique=unique)
-            host = connect_info.host
-            port = connect_info.port
-            user = connect_info.user
-            auth = connect_info.auth
-            pwd = connect_info.password
-            pkey = connect_info.pkey
-            connect_info.delete()
-            if pwd:
-                password = base64.b64decode(pwd).decode('utf-8')
-            else:
-                password = None
-            self.ssh = SSH(websocker=self, message=self.message, webuser=webuser, host=host)
-            if auth == 'key':
-                pkey = pkey
-                obj = StringIO()
-                obj.write(pkey)
-                obj.flush()
-                obj.seek(0)
-                self.pkey = obj
-
-                self.ssh.connect(
-                    host=host,
-                    user=user,
-                    password=password,
-                    pkey=self.pkey,
-                    port=port,
-                    pty_width=width,
-                    pty_height=height
-                )
-            else:
-                self.ssh.connect(
-                    host=host,
-                    user=user,
-                    password=password,
-                    port=port,
-                    pty_width=width,
-                    pty_height=height
-                )
+            self.ssh = webssh_socket(websocker=self, message=self.message, webuser=webuser, host=host, width=width,
+                                     height=height)
         except Exception as e:
             self.message['status'] = 1
             self.message['message'] = str(e)
