@@ -37,7 +37,9 @@ class webssh_socket:
                            host.user,
                            en.decrypt(host.password),
                            timeout=30)
-            self.chan = client.invoke_shell()
+            chan = client.invoke_shell()
+            self.transport = chan.get_transport()
+            self.chan = self.transport.open_session()
             self.chan.get_pty(term='xterm', width=width, height=height)
             time.sleep(0.5)
             recv = self.chan.recv(2048).decode('utf-8')
