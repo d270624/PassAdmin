@@ -104,12 +104,12 @@ def upRsaPub(ip, username, password, port):
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     try:
         ssh.connect(hostname=ip, username=username, password=password, port=port)
-        stdin, stdout, stderr = ssh.exec_command('cat ~/.ssh/authorized_keys')
+        # stdin, stdout, stderr = ssh.exec_command('cat ~/.ssh/authorized_keys')
         id_rsa_pub = os.popen('cat ~/.ssh/id_rsa.pub').read()
-        if id_rsa_pub[10:30] not in str(stdout.read()):
-            ssh.exec_command('echo ' + id_rsa_pub + ' >> ~/.ssh/authorized_keys')
-        else:
-            return True
+        # if id_rsa_pub[10:30] not in str(stdout.read()):
+        ssh.exec_command('echo ' + id_rsa_pub + ' > ~/.ssh/authorized_keys')
+        # else:
+        return True
     except:
         return False
     finally:

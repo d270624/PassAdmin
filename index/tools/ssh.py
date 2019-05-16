@@ -42,17 +42,15 @@ class SSH:
             self.channel = self.transport.open_session()
             self.channel.get_pty(term=term, width=pty_width, height=pty_height)
             self.channel.invoke_shell()
+            time.sleep(1)
+            recv = self.channel.recv(2048).decode('utf-8')
+            self.message['status'] = 0
+            self.message['message'] = recv
+            message = json.dumps(self.message)
+            self.websocker.send(message)
 
-            for i in range(2):
-                # time.sleep(0.05)
-                recv = self.channel.recv(1024).decode('utf-8')
-                self.message['status'] = 0
-                self.message['message'] = recv
-                message = json.dumps(self.message)
-                self.websocker.send(message)
-            self.channel.send('ssh 139.219.110.189 -p 10086\n')
 
-        except socket.timeout as e:
+        except socket.timeout:
             self.message['status'] = 1
             self.message['message'] = 'ssh 连接超时'
             message = json.dumps(self.message)
