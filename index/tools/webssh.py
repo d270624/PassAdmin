@@ -6,7 +6,8 @@ import json
 from threading import Thread
 import time
 import os
-
+from index.Rsa import *
+en = RsaChange()
 
 class webssh_socket:
     def __init__(self, websocker, message, webuser, host, width=80, height=24):
@@ -32,7 +33,7 @@ class webssh_socket:
             client.connect(ip,
                            host.port,
                            host.user,
-                           host.password,
+                           en.decrypt(host.password),
                            timeout=30)
             self.chan = client.invoke_shell()
             self.chan.resize_pty(width=width, height=height)
