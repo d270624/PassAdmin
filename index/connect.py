@@ -176,6 +176,9 @@ def downfile(ip, username, password, port, remote_file):
 
 
 def job_bash(ip, username, password, port, cmd):
+    mylog.info(ip)
+    mylog.info(username)
+    mylog.info(password)
     mylog.info(cmd)
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
