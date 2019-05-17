@@ -391,14 +391,15 @@ $(function () {
 });
 
 
-//通用文件上传方法
-st = 2;
-
 function Upfile(id, input, status, text, pd) {
     let file_input = $("#" + input + ""); //文件输入框
     let log_out = $("#" + status + ""); //结果日志输出
     let uid = $("#" + id + ""); //服务器uid
-    let progressbar = $("#progressbar"); //进度条
+    if (pd === 1) {
+        var progressbar = log_out; //进度条
+    } else {
+        var progressbar = $("#progressbar"); //进度条
+    }
     if (file_input.val() === "") {
         log_out.text("未选择文件,请先选择文件");
     } else {
@@ -423,60 +424,65 @@ function Upfile(id, input, status, text, pd) {
             },
             success: function (data) {
                 if (data.status === 1) {
-                    progressbar.text('');
-                    progressbar.hide();
+                    if (pd === 0) {
+                        progressbar.text('');
+                        progressbar.hide();
+                    }
+
                     log_out.text(text);
                     if (pd === 1) {
                         //部署执行
-                            // 如果文件上传成功，则执行部署项目的代码
-                            let time = $('#time');
-                            let obj_time = time.val();
-                            let pd = time.is(':visible'); //判断隐藏的定时任务是否显示
-                            let formData = new FormData();
-                            let uid = $('#uid3').val(); //服务器uid
-                            let obj_uid = $('#select').val();//项目uid
-                            let qname = $('#qname').val();
-                            if (pd) {
-                                formData.append("obj_time", obj_time);
-                                formData.append("time_status", "1");
-                            } else {
-                                formData.append("time_status", "0");
-                            }
-                            formData.append("uid", uid);
-                            formData.append("qname", qname);
-                            formData.append("obj_uid", obj_uid);
-                            $.ajax({
-                                url: "/obj_hander/",
-                                type: "POST",
-                                dataType: 'json',
-                                data: formData,
-                                contentType: false,
-                                processData: false,
-                                success: function (data) {
-                                    if (data.result === "time_error") {
-                                        $("#log").text("时间不能为空，请检测设置！");
-                                    } else if (data.result === "que_true") {
-                                        $("#log").text("已添加计划任务！");
-                                    } else if (data.result === "file_true") {
-                                        $("#log").text("文件上传成功！");
-                                    } else if (data.result === "file_false") {
-                                        $("#log").text("文件上传失败！");
-                                    } else if (data.result === "server_error") {
-                                        $("#log").text("服务器错误！");
-                                    } else {
-                                        $("#log").text(data.result);
-                                        WebSocketLog(uid, obj_uid);
-                                    }
-                                },
-                                error: function () {
-                                    $("#log").text("上传失败,请检查网络或者服务器配置");
-                                }
-                            });
+                        // 如果文件上传成功，则执行部署项目的代码
+                        let time = $('#time');
+                        let obj_time = time.val();
+                        let pd = time.is(':visible'); //判断隐藏的定时任务是否显示
+                        let formData = new FormData();
+                        let uid = $('#uid3').val(); //服务器uid
+                        let obj_uid = $('#select').val();//项目uid
+                        let qname = $('#qname').val();
+                        if (pd) {
+                            formData.append("obj_time", obj_time);
+                            formData.append("time_status", "1");
+                        } else {
+                            formData.append("time_status", "0");
                         }
+                        formData.append("uid", uid);
+                        formData.append("qname", qname);
+                        formData.append("obj_uid", obj_uid);
+                        $.ajax({
+                            url: "/obj_hander/",
+                            type: "POST",
+                            dataType: 'json',
+                            data: formData,
+                            contentType: false,
+                            processData: false,
+                            success: function (data) {
+                                if (data.result === "time_error") {
+                                    $("#log").text("时间不能为空，请检测设置！");
+                                } else if (data.result === "que_true") {
+                                    $("#log").text("已添加计划任务！");
+                                } else if (data.result === "file_true") {
+                                    $("#log").text("文件上传成功！");
+                                } else if (data.result === "file_false") {
+                                    $("#log").text("文件上传失败！");
+                                } else if (data.result === "server_error") {
+                                    $("#log").text("服务器错误！");
+                                } else {
+                                    $("#log").text(data.result);
+                                    WebSocketLog(uid, obj_uid);
+                                }
+                            },
+                            error: function () {
+                                $("#log").text("上传失败,请检查网络或者服务器配置");
+                            }
+                        });
                     }
+                }
                 if (data.status === 0) {
-                    progressbar.text('');
-                    progressbar.hide();
+                    if (pd === 0) {
+                        progressbar.text('');
+                        progressbar.hide();
+                    }
                     log_out.text(text);
                 }
             },
@@ -488,10 +494,10 @@ function Upfile(id, input, status, text, pd) {
 
     //进度条
     function progressHandlingFunction(e) {
+        progressbar.show();
         let curr = e.loaded;
         let total = e.total;
         let process = curr / total * 100;
-        progressbar.show();
         if (process === 100) {
             progressbar.text('文件已上传到代理服务器,正在上传到目标服务器...');
         } else {
