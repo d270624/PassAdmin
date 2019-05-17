@@ -545,7 +545,7 @@ $(function () {
     });
 });
 
-
+//部署程序
 $(function () {
     let obj_btn = $('#obj_btn');
     obj_btn.click(function () {
