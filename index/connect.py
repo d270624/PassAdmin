@@ -141,6 +141,7 @@ def handeler(ip, user, password, port):
 
 def progress_bar(a, b):
     bar = '进度 %3.2f%%\r' % (a * 100 / int(b))
+    mylog.info(bar)
 
 
 def upfile(ip, username, password, port, filename):
