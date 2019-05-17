@@ -339,7 +339,6 @@ def server_modify(request, uid):
             if request.method == 'GET':
                 data = {'uid': value.uid, 'hostname': value.hostname, 'system': value.system, 'ip': value.ip,
                         'intranet_ip': value.intranet_ip, 'user': value.user, 'password': en.decrypt(value.password),
-                        'normal_user': value.normal_user, 'normal_pwd': en.decrypt(value.normal_pwd),
                         'port': value.port, 'group': value.group}
                 form = PassWordForm(data)  # 将所有数据填入模板中，并显示到界面上
                 return render(request, 'modify_host.html', locals())
@@ -477,9 +476,7 @@ def server_import(request):
                         'intranet_ip': table.row_values(x)[4],
                         'user': table.row_values(x)[5],
                         'password': table.row_values(x)[6],
-                        'normal_user': table.row_values(x)[7],
-                        'normal_pwd': table.row_values(x)[8],
-                        'port': int(table.row_values(x)[9])
+                        'port': int(table.row_values(x)[7])
                     }
                     if cd['intranet_ip'] == "":
                         ip = cd['ip']
@@ -766,13 +763,10 @@ def getXshell(request, uid):
             ip = value.intranet_ip
         else:
             ip = value.ip
-        if value.normal_pwd is None or value.normal_user is None:
-            return HttpResponse("<html><script>alert('该服务器普通账号或密码没有设置，请联系管理员')</script></html>")
-        else:
-            response = HttpResponse("", status=302)
-            response['Location'] = "ssh://" + value.user + ":" + parse.quote(en.decrypt(
-                value.password)) + "@" + ip + ":" + str(value.port)
-            return response
+        response = HttpResponse("", status=302)
+        response['Location'] = "ssh://" + value.user + ":" + parse.quote(en.decrypt(
+            value.password)) + "@" + ip + ":" + str(value.port)
+        return response
     else:
         return HttpResponseRedirect('/login/')
 
@@ -786,13 +780,11 @@ def getXftp(request, uid):
             ip = value.intranet_ip
         else:
             ip = value.ip
-        if value.normal_pwd is None or value.normal_user is None:
-            return HttpResponse("<html><script>alert('该服务器普通账号或密码没有设置，请联系管理员')</script></html>")
-        else:
-            response = HttpResponse("", status=302)
-            response['Location'] = "sftp://" + value.user + ":" + parse.quote(en.decrypt(
-                value.password)) + "@" + ip + ":" + str(value.port)
-            return response
+
+        response = HttpResponse("", status=302)
+        response['Location'] = "sftp://" + value.user + ":" + parse.quote(en.decrypt(
+            value.password)) + "@" + ip + ":" + str(value.port)
+        return response
     else:
         return HttpResponseRedirect('/login/')
 
