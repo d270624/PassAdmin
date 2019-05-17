@@ -964,7 +964,8 @@ def job_normal(uid, data, obj_uid):
         data['result'] = "server_error"
         return data
     else:
-        data['result'] = "文件上传成功！开始执行项目部署脚本\n\n" + s + "\n脚本部署完成\n开始显示日志详情:\n"
+        data['result'] = "#### 文件上传成功！开始执行项目部署脚本 ####\n\n" + s + "\n####### 【脚本部署完成】 #######\n\n#######" \
+                                                       " 【开始显示日志详情】 #######\n"
         return data
 
 
