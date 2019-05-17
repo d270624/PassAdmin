@@ -15,7 +15,6 @@ from index.supervisors import superv
 from .connect import *
 from .forms import *
 from .serializers import *
-from .tools import tools
 from .publicQueue import *
 import json
 import threading
