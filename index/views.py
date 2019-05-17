@@ -685,6 +685,7 @@ def delServerTemplate(request):
 # 远程连接处理程序
 def webssh(request, id):
     sess = request.session.get('user')
+    hostname = PassWord.objects.get(uid=id)
     if sess:
         if request.method == 'GET':
             return render(request, 'webssh.html', locals())
