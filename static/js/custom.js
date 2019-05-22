@@ -254,8 +254,6 @@ function IndexTable(all) {
             let sort = data.sort;
             for (var keys in sort) {
                 let group = sort[keys];
-                console.log(group)
-                console.log(keys);
                 if (group.length === 0) {
                     $("#toolbar .toolbar_ul").append('<li><a href="javascript:void(0);" onclick=\"tt(\'' + keys + '\')\">' + keys + '</a></li>');
                 } else {
@@ -264,7 +262,7 @@ function IndexTable(all) {
                         keys + '<span class="caret"></span></a><ul class="dropdown-menu"></ul></li>');
                     let last = $('.dropdown ul:last');
                     for (let n = 0; n < group.length; n++) {
-                         last.append('<li><a href="javascript:void(0);" onclick=\"tt(\'' + keys + "|" + group[n] + '\')\">' +group[n] + '</a></li>');
+                        last.append('<li><a href="javascript:void(0);" onclick=\"tt(\'' + keys + "|" + group[n] + '\')\">' + group[n] + '</a></li>');
                     }
                 }
             }
@@ -612,29 +610,43 @@ $(function () {
 
 });
 
+//批量修改
 $('#operation').change(function () {
     let res = $(this).children('option:selected').val();
     if (res === "sort") {
         $('#selects').show();
         $('#sys_select').hide();
         $('#sname').text('分组名称:');
+        $('#pro_select').attr('style', 'display: none');
         $('#itext').attr('type', 'hidden');
     }
     if (res === "system") {
         $('#selects').hide();
         $('#sys_select').show();
         $('#sname').text('系统名称:');
+        $('#pro_select').attr('style', 'display: none');
         $('#itext').attr('type', 'hidden');
     }
     if (res === "port") {
         $('#selects').hide();
         $('#sys_select').hide();
         $('#sname').text('新的端口:');
+        $('#pro_select').attr('style', 'display: none');
         $('#itext').attr('type', 'text');
         $('#itext').attr('style', 'width:150px');
+
+    }
+    if (res === "project") {
+        $('#selects').hide();
+        $('#sys_select').hide();
+        $('#itext').hide();
+        $('#pro_select').attr('type', 'text');
+        $('#pro_select').attr('style', 'width:150px');
+
     }
 });
 
+//批量修改保存
 $('#batch_save').click(function () {
     let action = $('#operation').children('option:selected').val();
     let formData = new FormData();
@@ -659,6 +671,10 @@ $('#batch_save').click(function () {
     }
     if (action === 'port') {
         let data = $('#itext').val();
+        formData.append('data', data);
+    }
+    if (action === 'project') {
+        let data = $('#pro_select').val();
         formData.append('data', data);
     }
     $.ajax({

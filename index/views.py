@@ -136,6 +136,7 @@ def serverManage(request):
     if sess:
         value = Object.objects.all()
         group = Group.objects.all()
+        project = ProjectName.objects.all()
         if judgeUserGroup(sess):
             auth = 1
             return render(request, 'index.html', locals())
@@ -398,6 +399,13 @@ def batch_edit(request):
                         res = PassWord.objects.get(uid=x)  # 节点id
                         res.port = data  # 要修改的分组id
                         res.save()
+                    if action == 'project':
+                        datas = data.split(',')
+                        res = PassWord.objects.get(uid=x)
+                        new = []
+                        for i in datas:
+                            new.append(int(i))
+                        res.projectName.set(new)
                 return JsonResponse({"status": "修改成功"})
             except:
                 return JsonResponse({"status": "修改失败"})

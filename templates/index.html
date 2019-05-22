@@ -192,6 +192,7 @@
                             <option value="sort">修改分类</option>
                             <option value="system">修改系统</option>
                             <option value="port">修改端口</option>
+                            <option value="project">修改项目</option>
                         </select>
                         <span class="modal-title" id="sname" style="margin-left: 36.4%">分组名称:</span>
                     </div>
@@ -207,6 +208,11 @@
                             <option value="level3">其他</option>
                         </select>
                         <input class="form-control" type="hidden" id="itext">
+                        <select multiple id="pro_select" class="form-control" style="display: none">
+                            {% for x in project %}
+                                <option value=" {{ x.uid }}">{{ x.name }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
                 </div>
                 <div style="margin-top: 10%;margin-bottom:4%">
@@ -220,7 +226,7 @@
     </div>
     <!-- 工具容器 -->
     <div id="toolbar" class="btn-group">
-        <ul  class="nav nav-tabs  toolbar_ul">
+        <ul class="nav nav-tabs  toolbar_ul">
             <li class="active"><a href="/index/">所有</a></li>
         </ul>
     </div>
