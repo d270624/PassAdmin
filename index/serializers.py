@@ -5,6 +5,13 @@ from .models import *  # 导入表
 class Newstagserializer(serializers.ModelSerializer):
     system = serializers.CharField(source='get_system_display')
     group = serializers.CharField()
+    project = serializers.SerializerMethodField()
+
+    def get_project(self, obj):
+        new = []
+        for x in obj.projectName.all():
+            new.append(str(x))
+        return new
 
     class Meta:
         model = PassWord
