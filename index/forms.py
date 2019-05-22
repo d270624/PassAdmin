@@ -33,6 +33,7 @@ class PassWordForm(forms.ModelForm):  # 自动生成表单
             'password': '密码',
             'port': '端口',
             'group': '分组',
+            'projectName': '项目名称',
         }
         widgets = {
             'hostname': forms.TextInput(attrs={
@@ -61,6 +62,7 @@ class PassWordForm(forms.ModelForm):  # 自动生成表单
                 'placeholder': '选填',
             }),
             'group': forms.Select(attrs={'class': 'form-control'}),
+            'projectName': forms.SelectMultiple(attrs={'class': 'form-control'}),
         }
 
 

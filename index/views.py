@@ -154,44 +154,67 @@ def SignOut(request):
     return resp
 
 
+def hostAll(news, sess, n):
+    use = Users.objects.get(user=sess)
+    rep = use.remark.all()  # 获取备注信息
+    sort = {}
+    serializer = Newstagserializer(news, many=True).data
+    for x in serializer:  # 将结果重新组合，把用户备注添加到json中
+        arr = set()
+        for i in x['projectName']:
+            name = ProjectName.objects.get(uid=i)
+            arr.add(str(name))
+        key = x['group']
+        value = sort.get(x['group'])
+        if value:
+            if value is []:
+                if key in sort:  # 如果在里面则跳过
+                    pass
+                else:
+                    sort[key] = []  # 否则就插入一个空数据进去
+            else:  # 如果值不为空，且key已经存的话则与之前的数据合并
+                if key in sort:
+                    sort[key] = list(set(sort[key]) | arr)
+                else:  # 否则就创建一个新的
+                    sort[key] = list(arr)
+        else:
+            sort[key] = list(arr)
+        for r in rep:
+            if r.host.uid == x['uid']:
+                x['rep'] = r.rep
+                x['repUid'] = r.uid
+        x['auth'] = n
+    return sort, serializer
+
+
 # 首页ajax核心处理程序
 def getServerList(request):
     sess = request.session.get('user')
-    use = Users.objects.get(user=sess)
-    rep = use.remark.all()  # 获取备注信息
     status = request.POST.get('status')
+    project_name = request.POST.get('project')
     # page_size = int(request.POST.get('pageSize'))
     # page_number = int(request.POST.get('pageNumber'))
-    sort = set()
     if judgeUserGroup(sess):
         if request.is_ajax():
             news = PassWord.objects.all()
-            serializer = Newstagserializer(news, many=True).data
+            sort, serializer = hostAll(news=news, sess=sess, n=1)
             if status == 'all':
-                for x in serializer:  # 将结果重新组合，把用户备注添加到json中
-                    sort.add(x['group'])
-                    for r in rep:
-                        if r.host.uid == x['uid']:
-                            x['rep'] = r.rep
-                            x['repUid'] = r.uid
-                    x['auth'] = 1
-                return JsonResponse({'sort': list(sort), 'rows': serializer})
+                return JsonResponse({'sort': sort, 'rows': serializer})
             else:
-                de = []
-                for index, x in enumerate(serializer, 0):  # 将结果重新组合，把用户备注添加到json中
-                    if str(x['group']) != status:
-                        de.append(index)
-                    else:
-                        sort.add(x['group'])
-                        for r in rep:
-                            if r.host.uid == x['uid']:
-                                x['rep'] = r.rep
-                                x['repUid'] = r.uid
-                        x['auth'] = 1
-                for x in de:
-                    serializer[x] = None
-                data = list(filter(None, serializer))
-                return JsonResponse({'sort': list(sort), 'rows': data})
+                data = []
+                if project_name == "None" or project_name is None:
+                    for x in serializer:
+                        if status == x['group']:
+                            data.append(x)
+                else:
+                    res = ProjectName.objects.get(name=project_name)
+                    uid = res.uid
+                    for x in serializer:
+                        projectNameUid = x['projectName']
+                        group = x['group']
+                        if uid in projectNameUid and status in group:
+                            data.append(x)
+                return JsonResponse({'sort': sort, 'rows': data})
         else:
             return JsonResponse({"total": 0, "rows": []})
     else:
@@ -204,32 +227,25 @@ def getServerList(request):
                 host = groups.password_set.all()
                 y = {x for x in host}  # 2.取组中的所有机器
                 s = s | y  # 3.合并机器
-            serializer = Newstagserializer(s, many=True).data
+
+            sort, serializer = hostAll(news=s, sess=sess, n=0)
             if status == 'all':
-                for x in serializer:  # 将结果重新组合，把用户备注添加到json中
-                    sort.add(x['group'])
-                    for r in rep:
-                        if r.host.uid == x['uid']:
-                            x['rep'] = r.rep
-                            x['repUid'] = r.uid
-                    x['auth'] = 0
-                return JsonResponse({'sort': list(sort), 'rows': serializer})
+                return JsonResponse({'sort': sort, 'rows': serializer})
             else:
-                de = []
-                for index, x in enumerate(serializer, 0):  # 将结果重新组合，把用户备注添加到json中
-                    if str(x['group']) != status:
-                        de.append(index)
-                    else:
-                        sort.add(x['group'])
-                        for r in rep:
-                            if r.host.uid == x['uid']:
-                                x['rep'] = r.rep
-                                x['repUid'] = r.uid
-                        x['auth'] = 0
-                for x in de:
-                    serializer[x] = None
-                data = list(filter(None, serializer))
-                return JsonResponse({'sort': list(sort), 'rows': data})
+                data = []
+                if project_name == "None" or project_name is None:
+                    for x in serializer:
+                        if status == x['group']:
+                            data.append(x)
+                else:
+                    res = ProjectName.objects.get(name=project_name)
+                    uid = res.uid
+                    for x in serializer:
+                        projectNameUid = x['projectName']
+                        group = x['group']
+                        if uid in projectNameUid and status in group:
+                            data.append(x)
+                return JsonResponse({'sort': sort, 'rows': data})
 
 
 # 分页处理
@@ -339,7 +355,7 @@ def server_modify(request, uid):
             if request.method == 'GET':
                 data = {'uid': value.uid, 'hostname': value.hostname, 'system': value.system, 'ip': value.ip,
                         'intranet_ip': value.intranet_ip, 'user': value.user, 'password': en.decrypt(value.password),
-                        'port': value.port, 'group': value.group}
+                        'port': value.port, 'group': value.group, 'projectName': value.projectName.all()}
                 form = PassWordForm(data)  # 将所有数据填入模板中，并显示到界面上
                 return render(request, 'modify_host.html', locals())
             else:
@@ -347,7 +363,6 @@ def server_modify(request, uid):
                 if form.is_valid():
                     cd = form.cleaned_data
                     cd['password'] = en.encryption(cd['password'])
-                    cd['normal_pwd'] = en.encryption(cd['normal_pwd'])
                     PassWord.objects.filter(uid=uid).update(**cd)  # 更新数据
                     mes = '修改成功'
                     return render(request, 'modify_host.html', locals())
@@ -956,8 +971,7 @@ def job_normal(uid, data, obj_uid):
         data['result'] = "server_error"
         return data
     else:
-        data['result'] = "#### 文件上传成功！开始执行项目部署脚本 ####\n\n" + s + "\n####### 【脚本部署完成】 #######\n\n#######" \
-                                                       " 【开始显示日志详情】 #######\n"
+        data['result'] = "#### 文件上传成功！开始执行项目部署脚本 ####\n\n" + s + "\n####### 【脚本部署完成】 #######"
         return data
 
 

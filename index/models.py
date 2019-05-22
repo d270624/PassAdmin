@@ -17,6 +17,18 @@ Project_CHOICE = (
     ('level4', '正式'),)
 
 
+class ProjectName(models.Model):  # 添加服务器分组类
+    def __str__(self):
+        return self.name
+
+    uid = models.AutoField(primary_key=True, verbose_name='ID')  # 自增id
+    name = models.CharField(max_length=30, verbose_name='项目名称')
+
+    class Meta:
+        verbose_name = "服务器项目组"  # 定义该实体类在 admin 中显示的名字(单数形式)
+        verbose_name_plural = verbose_name  # 效果同上，是复数形式
+
+
 class Group(models.Model):  # 添加服务器分组类
     def __str__(self):
         return self.name
@@ -43,6 +55,7 @@ class PassWord(models.Model):  # 添加服务器类
     password = models.CharField(max_length=300, verbose_name='密码', null=True, blank=True)  # 密码
     port = models.IntegerField(default=22, verbose_name='端口', null=True, blank=True)  # 端口
     group = models.ForeignKey(Group, null=True, on_delete=models.CASCADE, verbose_name='分组')
+    projectName = models.ManyToManyField(ProjectName, blank=True, verbose_name='项目名称')
     system_info = models.CharField(max_length=20, verbose_name='系统版本', null=True, blank=True)  # 系统版本
     cpu_count = models.CharField(max_length=100, verbose_name='cpu核心数', null=True, blank=True)  # cpu信息
     cpu_info = models.CharField(max_length=100, verbose_name='cpu信息', null=True, blank=True)  # cpu信息
@@ -174,7 +187,7 @@ class UrlMgm(models.Model):
 
     class Meta:
         verbose_name = "网址记录"  # 定义该实体类在 admin 中显示的名字(单数形式)
-        verbose_name_plural = verbose_name  # 效果同上，是复数形式
+        verbose_name_plural = verbose_name
 
 
 class UrlMgmgroup(models.Model):
@@ -187,7 +200,7 @@ class UrlMgmgroup(models.Model):
 
     class Meta:
         verbose_name = "网址记录权限控制"  # 定义该实体类在 admin 中显示的名字(单数形式)
-        verbose_name_plural = verbose_name  # 效果同上，是复数形式
+        verbose_name_plural = verbose_name
 
 
 class UsersGroup(models.Model):  # 添加用户分组类
@@ -202,7 +215,7 @@ class UsersGroup(models.Model):  # 添加用户分组类
 
     class Meta:
         verbose_name = "用户组"  # 定义该实体类在 admin 中显示的名字(单数形式)
-        verbose_name_plural = verbose_name  # 效果同上，是复数形式
+        verbose_name_plural = verbose_name
 
 
 class Users(models.Model):  # 添加用户类
@@ -233,4 +246,4 @@ class supervisor(models.Model):
 
     class Meta:
         verbose_name = "supervisor"  # 定义该实体类在 admin 中显示的名字(单数形式)
-        verbose_name_plural = verbose_name  # 效果同上，是复数形式
+        verbose_name_plural = verbose_name

@@ -16,10 +16,11 @@ class PassWordAdmin(admin.ModelAdmin):
     list_display = ('hostname', 'system', 'ip', 'intranet_ip', 'user', 'group')
     fieldsets = (
         ('main', {
-            'fields': ('hostname', 'system', 'ip', 'intranet_ip', 'user', 'password', 'port', 'group', 'normal_user',
-                       'normal_pwd')}),
-        ('optional', {'fields': ('system_info', 'cpu_count', 'cpu_info', 'mem_info', 'hard_info', 'status')}),
+            'fields': ('hostname', 'system', 'ip', 'intranet_ip', 'user', 'password', 'port', 'group', 'projectName')}),
+        ('optional',
+         {'fields': ('system_info', 'cpu_count', 'cpu_info', 'mem_info', 'hard_info', 'status')}),
     )
+    filter_horizontal = ('projectName',)
 
 
 class UsersAdmin(admin.ModelAdmin):
@@ -32,6 +33,7 @@ class supervisorAdmin(admin.ModelAdmin):
 
 admin.site.register(PassWord, PassWordAdmin)
 admin.site.register(Group)
+admin.site.register(ProjectName)
 admin.site.register(Users, UsersAdmin)
 admin.site.register(UsersGroup, UsersGroupAdmin)
 admin.site.register(Queue)

@@ -53,16 +53,28 @@ function actionFormatter(value, row, index) {
 
 function tt(url) {
     let formData = new FormData();
-    formData.append("status", url);
-
+    let arr = url.split('|');
+    if (arr.length === 1) {
+        formData.append("status", arr[0]);
+        formData.append("project", "None");
+    } else {
+        formData.append("status", arr[0]);
+        formData.append("project", arr[1]);
+    }
     var elements = document.querySelectorAll('.nav.nav-tabs li');
     //数组是of,对象是in
     for (let item of elements) {
         item.className = ''
     }
 
-    let obj = event.srcElement.parentNode;
-    obj.setAttribute("class", "active");
+    let objs = event.srcElement.parentNode;
+    obj = objs.parentNode.parentNode;
+    if (obj.className === "") {
+        obj.setAttribute("class", "active");
+    } else {
+        objs.setAttribute("class", "active");
+    }
+
     $.ajax({
         type: "post",
         contentType: false,
@@ -71,6 +83,13 @@ function tt(url) {
         url: "/getServerList/",
         dataType: "json",
         success: function (data) {
+            for (let i = 0; i < data.rows.length; i++) {
+                if ($.isPlainObject(data.rows[i].group)) {
+                    for (let key in data.rows[i].group) {
+                        data.rows[i].group = key
+                    }
+                }
+            }
             $('#table').bootstrapTable('load', data.rows);
         }
     });
@@ -232,11 +251,24 @@ function IndexTable(all) {
             }
         },
         responseHandler: function (data) {
-            for (var i = 0; i < data.sort.length; i++) {
-                var group = data.sort[i];
-                $("#toolbar ul").append('<li><a href="javascript:void(0);" onclick=\"tt(\'' + group + '\')\">' + group + '</a></li>');
+            let sort = data.sort;
+            for (var keys in sort) {
+                let group = sort[keys];
+                console.log(group)
+                console.log(keys);
+                if (group.length === 0) {
+                    $("#toolbar .toolbar_ul").append('<li><a href="javascript:void(0);" onclick=\"tt(\'' + keys + '\')\">' + keys + '</a></li>');
+                } else {
+                    $("#toolbar .toolbar_ul").append('<li class="dropdown">' +
+                        '<a class="dropdown-toggle" data-toggle="dropdown" href="javascript:void(0);">' +
+                        keys + '<span class="caret"></span></a><ul class="dropdown-menu"></ul></li>');
+                    let last = $('.dropdown ul:last');
+                    for (let n = 0; n < group.length; n++) {
+                         last.append('<li><a href="javascript:void(0);" onclick=\"tt(\'' + keys + "|" + group[n] + '\')\">' +group[n] + '</a></li>');
+                    }
+                }
             }
-            return data.rows;
+            return data.rows; //此处用于对结果进行处理，使分类变成字符串显示
         },
     });
 }
@@ -249,6 +281,7 @@ function radio4() {
     $('#dv3').hide();
     $('#dv4').hide();
     $('#q_btn').hide();
+    $('#chengxu').show();
     $('#obj_btn').text('开始部署');
 }
 
@@ -259,6 +292,7 @@ function radio5() {
     $('#dv3').show();
     $('#dv4').show();
     $('#q_btn').show();
+    $('#chengxu').hide();
     let time = $('#time');
     time.val(CurentTime())
     $('#obj_btn').text('添加定时任务');
@@ -276,7 +310,7 @@ function WebSocketLog(uid, obj_uid) {
     if ("WebSocket" in window) {
         // 打开一个 web socket
         // var host = window.location.host;
-        var ws = new WebSocket("ws://" + location.hostname + ':' + 8001 + "/logs/");
+        var ws = new WebSocket("ws://" + location.hostname + ':' + 8000 + "/logs/");
         ws.onopen = function () {
 
             // Web Socket 已连接上，使用 send() 方法发送数据
@@ -284,8 +318,8 @@ function WebSocketLog(uid, obj_uid) {
         };
         ws.onmessage = function (evt) {
             var received_msg = evt.data;
-            $('#log').append(received_msg);
-            document.getElementById('log').scrollTop = document.getElementById('log').scrollHeight;
+            $('#logs').append(received_msg);
+            document.getElementById('logs').scrollTop = document.getElementById('logs').scrollHeight;
         };
         ws.onclose = function () {
             // 关闭 websocket
@@ -497,10 +531,11 @@ function ProjectDep() {
                 $("#log").text("文件上传成功！");
             } else if (data.result === "file_false") {
                 $("#log").text("文件上传失败！");
-            } else if (data.result === "server_error") {
+            } else if (data.result === "sradio5erver_error") {
                 $("#log").text("服务器错误！");
             } else {
                 $("#log").text(data.result);
+
                 WebSocketLog(uid, obj_uid);
             }
         },
