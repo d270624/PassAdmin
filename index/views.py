@@ -364,6 +364,12 @@ def server_modify(request, uid):
                 if form.is_valid():
                     cd = form.cleaned_data
                     cd['password'] = en.encryption(cd['password'])
+                    id = []
+                    for x in cd['projectName']:
+                        id.append(x)
+                    res = PassWord.objects.get(uid=uid)
+                    res.projectName.set(id)
+                    cd.pop('projectName')
                     PassWord.objects.filter(uid=uid).update(**cd)  # 更新数据
                     mes = '修改成功'
                     return render(request, 'modify_host.html', locals())
