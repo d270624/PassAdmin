@@ -31,21 +31,21 @@ function actionFormatter(value, row, index) {
     var repUid = row.repUid;
     var auth = row.auth;
     var result = "";
-    result += '<button onclick=window.open("/webssh/' + id + '") style="color:#fff;background-color:#28c210;border-color:#28c210;border-style:solid">web连接</button> ';
-    result += '<button onclick=window.location.href="/xshell/' + id + '" style="color:#fff;background-color:#2caef5;border-color:#2caef5;border-style:solid">Xshell连接</button> ';
-    result += '<button onclick=window.location.href="/xftp/' + id + '" style="color:#fff;background-color:#1a4c67;border-color:#1a4c67;border-style:solid">Xftp上传</button> ';
+    result += '<button onclick=window.open("/webssh/' + id + '") class="btn btn-danger btn-sm" style="margin-left: 0">web连接</button> ';
+    result += '<button onclick=window.location.href="/xshell/' + id + '" class="btn btn-danger btn-sm" style="margin-left: 0">Xshell连接</button> ';
+    result += '<button onclick=window.location.href="/xftp/' + id + '" class="btn btn-success btn-sm" style="margin-left: 0">Xftp上传</button> ';
 
     result += '<button onclick=document.getElementById("up_uid").value=' + id + ';document.getElementById("myModalLabel").innerText="服务器:' + rows + '"' +
-        ' style="color:#fff;background-color:#1278e2;border-color:#1278e2;border-style:solid" data-toggle="modal" data-target="#myModal">在线上传</button> ';
+        ' class="btn btn-success btn-sm" style="margin-left: 0" data-toggle="modal" data-target="#myModal">在线上传</button> ';
 
     result += '<button onclick=document.getElementById("uid3").value=' + id + ';document.getElementById("myModalLabel3").innerText="服务器:' + rows + '"' +
-        ' style="color:#fff;background-color:#672ade;border-color:#672ade;border-style:solid" data-toggle="modal"  data-target="#myModal3">项目部署</button> ';
+        ' class="btn btn-info btn-sm" style="margin-left: 0;" data-toggle="modal"  data-target="#myModal3">项目部署</button> ';
 
     result += '<button onclick=document.getElementById("uid4").value=' + id + ';document.getElementById("uid5").value="' + repUid + '";document.getElementById("myModalLabel4").innerText="服务器:' + rows + '"' +
-        ' style="color:#fff;background-color:#8a6d3b;border-color:#8a6d3b;border-style:solid" data-toggle="modal"  data-target="#myModal4">备注</button> ';
+        ' class="btn btn-primary btn-sm" style="margin-left: 0" data-toggle="modal"  data-target="#myModal4">备注</button> ';
     if (auth === 1) {
-        result += '<button onclick=window.location.href="/update/' + id + '" style="color:#fff;background-color:#409eff;border-color:#409eff;border-style:solid">修改</button> ';
-        result += '<button onclick=\'if (confirm("确定要删除吗？")) {window.location.href="/del/' + id + '"}\' style="color:#fff;background-color:#c20003;border-color:#c20006;border-style:solid">删除</button>';
+        result += '<button onclick=window.location.href="/update/' + id + '" class="btn btn-warning btn-sm" style="margin-left: 0">修改</button> ';
+        result += '<button onclick=\'if (confirm("确定要删除吗？")) {window.location.href="/del/' + id + '"}\' class="btn btn-danger btn-sm" style="margin-left: 0">删除</button>';
     }
     return result;
 
