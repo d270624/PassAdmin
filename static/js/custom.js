@@ -31,8 +31,8 @@ function actionFormatter(value, row, index) {
     var repUid = row.repUid;
     var auth = row.auth;
     var result = "";
-    result += '<button onclick=window.open("/webssh/' + id + '") class="btn btn-danger btn-sm" style="margin-left: 0">web连接</button> ';
-    result += '<button onclick=window.location.href="/xshell/' + id + '" class="btn btn-danger btn-sm" style="margin-left: 0">Xshell连接</button> ';
+    result += '<button onclick=window.open("/webssh/' + id + '") class="btn btn-danger btn-sm" style="margin-left: 0;background-color: #017162;border-color: #017162">web连接</button> ';
+    result += '<button onclick=window.location.href="/xshell/' + id + '" class="btn btn-danger btn-sm" style="margin-left: 0;background-color: #017162;border-color: #017162">Xshell连接</button> ';
     result += '<button onclick=window.location.href="/xftp/' + id + '" class="btn btn-success btn-sm" style="margin-left: 0">Xftp上传</button> ';
 
     result += '<button onclick=document.getElementById("up_uid").value=' + id + ';document.getElementById("myModalLabel").innerText="服务器:' + rows + '"' +
