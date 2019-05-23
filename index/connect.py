@@ -176,14 +176,12 @@ def downfile(ip, username, password, port, remote_file):
 
 
 def job_bash(ip, username, password, port, cmd):
-    mylog.info(ip)
-    mylog.info(username)
-    mylog.info(password)
-    mylog.info(cmd)
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     try:
         ssh.connect(hostname=ip, username=username, password=password, port=port)
+        cmd = '#!/bin/bash\n' + cmd
+        mylog.info(cmd)
         stdin, stdout, stderr = ssh.exec_command(cmd)
         out = stdout.read().decode('utf-8')
         err = stderr.read().decode('utf-8')
