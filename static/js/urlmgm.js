@@ -43,7 +43,7 @@ $('#table').bootstrapTable({
 function access(value, row, index) {
     var url = row.url;
     var result = "";
-    result += '<button data-toggle="modal" data-target="#databaseModal" onclick=\'window.open("' + url + '")\' style="color:#fff;background-color:#409eff;border-color:#409eff;border-style:solid">访问</button> ';
+    result += '<button data-toggle="modal" data-target="#databaseModal" onclick=\'window.open("' + url + '")\' style="color:#fff;background-color:#409eff;border-color:#409eff;border-style:solid;margin-left: 0" class="btn btn-primary">访问</button> ';
     return result;
 }
 

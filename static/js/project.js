@@ -65,7 +65,7 @@ function project(value, row, index) {
     // result += '<button data-toggle="modal" data-target="#myModal3" onclick="upclick(' + uid + ')" style="color:#fff;background-color:#409eff;border-color:#409eff;border-style:solid">项目部署</button> ';
 
     result += '<button onclick=document.getElementById("host_id").value=' + host_id + ';document.getElementById("temp_id").value=' + template_id + ';document.getElementById("pro_title").innerText="项目名称:' + name + '"' +
-        ' style="color:#fff;background-color:#672ade;border-color:#672ade;border-style:solid" data-toggle="modal"  data-target="#pro">部署项目</button> ';
+        ' style="color:#fff;background-color:#672ade;border-color:#672ade;border-style:solid;margin-left: 0" class="btn btn-primary" data-toggle="modal"  data-target="#pro">部署项目</button> ';
     // result += '<button onclick=\'if (confirm("确定要删除吗？")) {window.location.href="/project_del/' + uid + '"}\' style="color:#fff;background-color:#c20003;border-color:#c20006;border-style:solid">删除</button>';
     return result;
 }

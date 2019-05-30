@@ -35,12 +35,12 @@
                                             <pre style="word-wrap: break-word; table-layout: fixed; width: 100%">{{ x.obj_text }}</pre>
                                         </td>
                                         <td>
-                                            <button id="edit" value="{{ x.uid }}" onclick="edit({{ x.uid }})"
-                                                    style="color:#fff;background-color:#409eff;border-color:#409eff;border-style:solid">
+                                            <button class="btn default" id="edit" value="{{ x.uid }}" onclick="edit({{ x.uid }})"
+                                                    style="margin-left:0;color:#fff;background-color:#409eff;border-color:#409eff;border-style:solid">
                                                 修改
                                             </button>
-                                            <button onclick="if (confirm('确定要删除吗？')) {window.location.href='{% url 'obj_del' x.uid %}'}"
-                                                    style="color:#fff;background-color:#c20003;border-color:#c20006;border-style:solid">
+                                            <button class="btn default" onclick="if (confirm('确定要删除吗？')) {window.location.href='{% url 'obj_del' x.uid %}'}"
+                                                    style="margin-left:0;color:#fff;background-color:#c20003;border-color:#c20006;border-style:solid">
                                                 删除
                                             </button>
                                         </td>

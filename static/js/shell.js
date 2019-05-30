@@ -78,8 +78,8 @@ function actionFormatter(value, row, index) {
     myArray[1] = row.name;
     myArray[2] = row.content;
     let result = "";
-    result += '<button onclick=\"modify(\'' + row.uid + '\',\'' + row.name + '\',\'' + escape(row.content) + '\')" style="color:#fff;background-color:#409eff;border-color:#409eff;border-style:solid">编辑</button>';
-    result += '<button onclick="del_template(' + row.uid + ')" style="color:#fff;background-color:#c20003;border-color:#c20006;border-style:solid">删除</button>';
+    result += '<button class="btn btn-primary" onclick=\"modify(\'' + row.uid + '\',\'' + row.name + '\',\'' + escape(row.content) + '\')"  style="padding:1px 6px;margin-left:0;color:#fff;background-color:#409eff;border-color:#409eff;border-style:solid">编辑</button>';
+    result += '<button class="btn btn-primary" onclick="del_template(' + row.uid + ')" style="padding:1px 6px;margin-left:0;color:#fff;background-color:#c20003;border-color:#c20006;border-style:solid">删除</button>';
     return result;
 }
 
