@@ -61,20 +61,19 @@
     <nav class="navbar-default navbar-side" role="navigation">
         <div class="sidebar-collapse">
             <ul class="nav" id="main-menu">
-                {#                {% block active %}{% endblock %}#}
-
-
                 <li>
                     <a href="{% url 'index' %}" id="showServer"><i class="fa fa-table"></i> 服务器记录</a>
                 </li>
-                <li>
-                    <a href="{% url 'showDatabase' %}" id="database"><i class="glyphicon glyphicon-hdd"></i> 数据库记录
-                    </a>
-                </li>
-                <li>
-                    <a href="{% url 'showUrlMgm' %}" id="urlmgm"><i class="glyphicon glyphicon-link"></i> 管理地址记录
-                    </a>
-                </li>
+                {% if auth == 1 %}
+                    <li>
+                        <a href="{% url 'showDatabase' %}" id="database"><i class="glyphicon glyphicon-hdd"></i> 数据库记录
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'showUrlMgm' %}" id="urlmgm"><i class="glyphicon glyphicon-link"></i> 管理地址记录
+                        </a>
+                    </li>
+                {% endif %}
                 <li>
                     <a href="{% url 'project' %}" id="project"><i class="glyphicon glyphicon-th-large"></i> 项目部署 </a>
                 </li>

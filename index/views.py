@@ -826,17 +826,17 @@ def project(request):
     sess = request.session.get('user')
     if sess:
         if request.method == 'GET':
-            if judgeUserGroup(sess):
-                auth = 1
-            else:
-                auth = 0
-            value = Object.objects.all()
-            return render(request, 'project.html', locals())
+            return render(request, 'project.html')
         else:
-            category = request.POST.get('category')
-            pro = Project.objects.filter(category=category)
-            serializer = projectSer(pro, many=True).data
-            return JsonResponse({'rows': serializer})
+            data = Group.objects.all()
+            rows = []
+            for group_name in data:
+                project_data = group_name.project_set.all()
+                temp = projectSer(project_data, many=True).data
+                if len(temp):
+                    rows.append({str(group_name): list(temp)})
+            print(rows)
+            return JsonResponse({'rows': rows})
     else:
         return HttpResponseRedirect('/login/')
 
@@ -1060,76 +1060,17 @@ def showDatabase(request):
         auth = 0
     if sess:
         if request.method == 'GET':
-            form = dataBaseForm()
-            return render(request, 'database.html', locals())
+            return render(request, 'database.html')
         else:
-            status = request.POST.get('status')
-            if status == 'all':
-                data = dataBase.objects.all()
-            else:
-                name = dataBaseGroup.objects.get(name=status)
-                data = name.database_set.all()  # 获取指定组内的所有内容
-            serializer = databaseSer(data, many=True).data
-            dataGroup = dataBaseGroup.objects.all().values('name')
-            sort = []
-            for x in dataGroup:
-                sort.append(x['name'])
-            return JsonResponse({'rows': serializer, 'sort': sort})
-    else:
-        return HttpResponseRedirect('/login/')
-
-
-# 添加数据库和修改
-
-def addDatabase(request):
-    sess = request.session.get('user')
-    if sess:
-        form = dataBaseForm(request.POST)
-        if form.is_valid():
-            cd = form.cleaned_data
-            dataBase(**cd).save()
-            messages.success(request, "添加成功")
-        else:
-            messages.success(request, "添加失败")
-        return HttpResponseRedirect('/showDatabase/')
-    else:
-        return HttpResponseRedirect('/login/')
-
-
-# 修改数据库
-def updateDatabase(request):
-    sess = request.session.get('user')
-    if sess:
-        if request.is_ajax():
-            uid = request.POST.get("uid")
-            obj = dataBase.objects.get(uid=uid)
-            data = {'uid': obj.uid, 'name': obj.name, 'dataGroup': str(obj.dataGroup), 'ip': obj.ip, 'user': obj.user,
-                    'password': obj.password,
-                    'port': obj.port, 'edition': obj.edition, 'remark': obj.remark}
-            return JsonResponse(data)
-        elif request.method == 'POST':
-            form = dataBaseForm(request.POST)
-            uid = request.POST.get('uid')
-            if form.is_valid():
-                cd = form.cleaned_data
-                dataBase.objects.filter(uid=uid).update(**cd)
-                messages.success(request, "修改成功")
-                return HttpResponseRedirect('/showDatabase/')
-            else:
-                messages.success(request, "修改失败")
-                return HttpResponseRedirect('/showDatabase/')
-    else:
-        return HttpResponseRedirect('/login/')
-
-
-# 删除数据库
-def delDatabase(request, uid):
-    sess = request.session.get('user')
-    if sess:
-        obj = dataBase.objects.get(uid=uid)
-        obj.delete()
-        messages.success(request, "删除成功")
-        return HttpResponseRedirect('/showDatabase/')
+            data = Group.objects.all()
+            rows = []
+            for group_name in data:
+                database_data = group_name.database_set.all()
+                temp = databaseSer(database_data, many=True).data
+                if len(temp):
+                    rows.append({str(group_name): list(temp)})
+            print(rows)
+            return JsonResponse({'rows': rows})
     else:
         return HttpResponseRedirect('/login/')
 
@@ -1143,21 +1084,17 @@ def showUrlMgm(request):
         else:
             auth = 0
         if request.method == 'GET':
-            form = UrlMgm()
-            return render(request, 'urlmgm.html', locals())
+            return render(request, 'urlmgm.html')
         else:
-            if auth == 1:
-                data = UrlMgm.objects.all()
-                serializer = urlMgmSer(data, many=True).data
-            else:
-                auth = Users.objects.get(user=sess)  # 用户用户名查找到用户对象
-                user_group = auth.user_group  # 通过用户对象查找到用户组
-                urlgroup = user_group.urlgroup  # 通过用户组得到url组
-                url = urlgroup.url  # 通过url组得到url组对象
-                data = url.all()  # 通过url组对象获取所有组内信息
-                # data = auth.user_group.urlmgm.url.all() # 省略写法
-                serializer = urlMgmSer(data, many=True).data
-            return JsonResponse({'rows': serializer})
+            data = Group.objects.all()
+            rows = []
+            for group_name in data:
+                urlmgm_data = group_name.urlmgm_set.all()
+                temp = urlMgmSer(urlmgm_data, many=True).data
+                if len(temp):
+                    rows.append({str(group_name): list(temp)})
+            print(rows)
+            return JsonResponse({'rows': rows})
     else:
         return HttpResponseRedirect('/login/')
 

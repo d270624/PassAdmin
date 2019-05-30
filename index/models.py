@@ -10,12 +10,6 @@ TOPIC_CHOICE = (
     ('level2', 'Windows'),
     ('level3', '其他'))
 
-Project_CHOICE = (
-    ('level1', '开发'),
-    ('level2', '测试'),
-    ('level3', '预发'),
-    ('level4', '正式'),)
-
 
 class ProjectName(models.Model):  # 添加服务器分组类
     def __str__(self):
@@ -111,7 +105,7 @@ class Project(models.Model):
         return self.name
 
     uid = models.AutoField(primary_key=True)
-    category = models.CharField(max_length=20, verbose_name='类别', default='开发', choices=Project_CHOICE)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, verbose_name='分组')
     name = models.CharField(max_length=50, verbose_name='项目名称')
     host = models.ForeignKey(PassWord, null=True, on_delete=models.CASCADE, verbose_name='服务器')
     template = models.ForeignKey(Object, on_delete=models.CASCADE, verbose_name='模板')
@@ -161,7 +155,7 @@ class dataBase(models.Model):
         return self.name
 
     uid = models.AutoField(primary_key=True)
-    dataGroup = models.ForeignKey(dataBaseGroup, null=True, on_delete=models.CASCADE, verbose_name='分组')
+    dataGroup = models.ForeignKey(dataBaseGroup, null=True, on_delete=models.CASCADE, verbose_name='数据库类型')
     name = models.CharField(max_length=50, verbose_name='名称', null=True, blank=True)
     ip = models.CharField(max_length=50, verbose_name='ip')
     user = models.CharField(max_length=50, verbose_name='用户名', null=True, blank=True)  # 用户账号
@@ -169,6 +163,7 @@ class dataBase(models.Model):
     port = models.CharField(max_length=10, verbose_name="端口", null=True, blank=True)  # 端口
     edition = models.CharField(max_length=50, verbose_name='版本', null=True, blank=True)
     remark = models.CharField(max_length=50, verbose_name='备注', null=True, blank=True)  # 备注
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, verbose_name='分组')
 
     class Meta:
         verbose_name = "数据库信息"  # 定义该实体类在 admin 中显示的名字(单数形式)
@@ -181,6 +176,7 @@ class UrlMgm(models.Model):
 
     uid = models.AutoField(primary_key=True)
     name = models.CharField(max_length=50, verbose_name='名称')
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, verbose_name='分组')
     url = models.CharField(max_length=200, verbose_name='url地址', null=True, blank=True)
     user = models.CharField(max_length=50, verbose_name='账号', null=True, blank=True)
     password = models.CharField(max_length=50, verbose_name='密码', null=True, blank=True)  # 密码

@@ -22,15 +22,18 @@
             </div>
         </div>
     </div>
-
+    <div id="toolbar" class="btn-group">
+        <ul class="nav nav-tabs  toolbar_ul">
+        </ul>
+    </div>
 {% endblock %}
 {% block js %}
     <script src="/static/assets/js/jquery-1.10.2.js"></script>
     <script src="/static/assets/js/bootstrap.min.js"></script>
-    <script src="/static/js/urlmgm.js"></script>
     <script src="/static/assets/js/jquery.metisMenu.js"></script>
     <script src="/static/assets/js/dataTables/bootstrap-table.js"></script>
     <script type="text/javascript" src="/static/js/jquery-ui.js"></script>
+    <script src="/static/js/urlmgm.js"></script>
     <script>
         $(function () {
             $('#myModal').on('hide.bs.modal', function () {
@@ -39,8 +42,6 @@
         });
         $(document).ready(function () {
             $('#urlmgm').attr('class', 'active-menu');
-            UrlMgmTable();
-            {#$("[placeholder='Search']").attr("value", "ALL");#}
         });
     </script>
 {% endblock %}

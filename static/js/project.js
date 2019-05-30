@@ -1,71 +1,60 @@
-function projectTable(category) {
-    let formData = new FormData();
-    formData.append("category", category);
+$('#table').bootstrapTable({
+    cache: false,   //是否启用 数据缓存
+    sidePagination: 'client',   //谁来分页，客户端：'client'，服务端：'server'
+    pageNumber: 1,   //默认显示 首页
+    pageSize: 10,     //每页需要显示的数据量
+    pagination: true,
+    sortName: "create_time",
+    sortOrder: "desc",
+    pageList: "[10, 25, 50, 100, All]",
+    toolbar: '#toolbar',
+    search: true,
+    columns: [{
+        field: 'group',
+        title: '分类',
+        switchable: true,
+        sortable: true,
+        align: 'center',
+        valign: 'middle',
+    }, {
+        field: 'name',
+        title: '项目名称',
+        switchable: true,
+        sortable: true,
+        align: 'center',
+        valign: 'middle',
+    }, {
+        field: 'host_name',
+        title: '服务器名称',
+        switchable: true,
+        sortable: true,
+        align: 'center',
+        valign: 'middle',
+    }, {
+        field: 'ip',
+        title: 'IP地址',
+        switchable: true,
+        sortable: true,
+        align: 'center',
+        valign: 'middle',
+    }, {
+        field: 'template_name',
+        title: '模板名称',
+        switchable: true,
+        sortable: true,
+        align: 'center',
+        valign: 'middle',
+    }, {
+        field: 'uid',
+        title: '操作',
+        width: 100,
+        align: 'center',
+        valign: 'middle',
+        switchable: true,
+        formatter: project,
+    }],
+});
 
-    $('#table').bootstrapTable({
-        url: '/project/',
-        method: 'POST',
-        contentType: "application/x-www-form-urlencoded; charset=UTF-8",
-        cache: false,   //是否启用 数据缓存
-        sidePagination: 'client',   //谁来分页，客户端：'client'，服务端：'server'
-        pageNumber: 1,   //默认显示 首页
-        pageSize: 10,     //每页需要显示的数据量
-        pagination: true,
-        sortName: "create_time",
-        sortOrder: "desc",
-        pageList: "[10, 25, 50, 100, All]",
-        toolbar: '#toolbar',
-        search: true,
-
-        columns: [{
-            field: 'name',
-            title: '项目名称',
-            switchable: true,
-            sortable: true,
-            align: 'center',
-            valign: 'middle',
-        }, {
-            field: 'host_name',
-            title: '服务器名称',
-            switchable: true,
-            sortable: true,
-            align: 'center',
-            valign: 'middle',
-        }, {
-            field: 'ip',
-            title: 'IP地址',
-            switchable: true,
-            sortable: true,
-            align: 'center',
-            valign: 'middle',
-        }, {
-            field: 'template_name',
-            title: '模板名称',
-            switchable: true,
-            sortable: true,
-            align: 'center',
-            valign: 'middle',
-        }, {
-            field: 'uid',
-            title: '操作',
-            width: 100,
-            align: 'center',
-            valign: 'middle',
-            switchable: true,
-            formatter: project,
-        }],
-        queryParams: function (params) {
-            return {
-                category: category,
-                pageSize: params.limit, //每一页的数据行数，默认是上面设置的10(pageSize)
-                pageNumber: params.offset / params.limit + 1, //当前页面,默认是上面设置的1(pageNumber)
-            }
-        },
-        responseHandler: function (data) {
-            return data.rows;
-        },
-    });
-}
 
 function project(value, row, index) {
     uid = row.uid;
@@ -204,7 +193,46 @@ function WebSocketPublic() {
 }
 
 
+$.ajax({
+    type: "post",
+    contentType: false,
+    processData: false,
+    url: "/project/",
+    dataType: "json",
+    success: function (data) {
+        datas = data.rows;
+        let rows = [];
+        for (let i = 0; i < data.rows.length; i++) {
+            let keys = data.rows[i]; //获取每一行数据
+            for (let key in keys) {  //取键
+                $("#toolbar .toolbar_ul").append('<li><a href="javascript:void(0);" onclick="choice(\'' + key + '\')">' + key + '</a></li>')
+                for (let n = 0; n < keys[key].length; n++) {
+                    if (i === 0) {
+                        rows.push(keys[key][n]); //取所有键里面的值
+                    }
+                }
+            }
+        }
+        $("#toolbar .toolbar_ul li:first").attr('class', 'active');
+        $('#table').bootstrapTable('load', rows);
+
+
+    }
+
+});
+
 function choice(category) {
+    let rows = [];
+    for (let i = 0; i < datas.length; i++) {
+        let keys = datas[i];
+        for (let key in keys) {
+            if (key === category) {
+                for (let n = 0; n < keys[key].length; n++) {
+                    rows.push(keys[key][n]); //取所有键里面的值
+                }
+            }
+        }
+    }
     var elements = document.querySelectorAll('.nav.nav-tabs li');
     //数组是of,对象是in
     for (let item of elements) {
@@ -212,6 +240,6 @@ function choice(category) {
     }
     let obj = event.srcElement.parentNode;
     obj.setAttribute("class", "active");
-     $('#table').bootstrapTable('destroy');
-    projectTable(category)
+    $('#table').bootstrapTable('load', rows);
+
 }

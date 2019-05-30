@@ -29,6 +29,7 @@ class templateSer(serializers.ModelSerializer):
 
 class databaseSer(serializers.ModelSerializer):
     dataGroup = serializers.CharField()  # 用于显示分组名称，不然会显示ID
+    group = serializers.CharField()
 
     class Meta:
         model = dataBase
@@ -39,6 +40,7 @@ class projectSer(serializers.ModelSerializer):
     ip = serializers.SerializerMethodField()
     host_name = serializers.SerializerMethodField()
     template_name = serializers.SerializerMethodField()
+    group = serializers.CharField()
 
     class Meta:
         model = Project
@@ -60,6 +62,8 @@ class projectSer(serializers.ModelSerializer):
 
 
 class urlMgmSer(serializers.ModelSerializer):
+    group = serializers.CharField()
+
     class Meta:
         model = UrlMgm
         fields = '__all__'
