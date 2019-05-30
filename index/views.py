@@ -825,8 +825,13 @@ def getXftp(request, uid):
 def project(request):
     sess = request.session.get('user')
     if sess:
+        if judgeUserGroup(sess):
+            auth = 1
+        else:
+            auth = 0
+    if sess:
         if request.method == 'GET':
-            return render(request, 'project.html')
+            return render(request, 'project.html', locals())
         else:
             data = Group.objects.all()
             rows = []
@@ -1060,7 +1065,7 @@ def showDatabase(request):
         auth = 0
     if sess:
         if request.method == 'GET':
-            return render(request, 'database.html')
+            return render(request, 'database.html', locals())
         else:
             data = Group.objects.all()
             rows = []
@@ -1084,7 +1089,7 @@ def showUrlMgm(request):
         else:
             auth = 0
         if request.method == 'GET':
-            return render(request, 'urlmgm.html')
+            return render(request, 'urlmgm.html', locals())
         else:
             data = Group.objects.all()
             rows = []
