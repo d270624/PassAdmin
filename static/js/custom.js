@@ -321,9 +321,10 @@ function WebSocketLog(uid, obj_uid) {
         // var host = window.location.host;
         var ws = new WebSocket("ws://" + location.hostname + ':' + 8000 + "/logs/");
         ws.onopen = function () {
-
             // Web Socket 已连接上，使用 send() 方法发送数据
-            ws.send(uid + '|' + obj_uid)
+            let message = {'uid': uid, 'obj_uid': obj_uid};
+            let messages = JSON.stringify(message);
+            ws.send(messages)
         };
         ws.onmessage = function (evt) {
             var received_msg = evt.data;

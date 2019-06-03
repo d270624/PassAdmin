@@ -5,7 +5,7 @@ import socket
 import threading
 from index.forms import *
 import logging
-
+import json
 mylog = logging.getLogger('django.server')
 en = RsaChange()
 
@@ -36,8 +36,9 @@ class logs(WebsocketConsumer):
 
     def receive(self, text_data=None, bytes_data=None):  # 每次都执行接收网页发过来的json数据
         try:
-            uid = text_data.split('|')[0]
-            obj_uid = text_data.split('|')[1]
+            data = json.loads(text_data)
+            uid = data['uid']
+            obj_uid = data['obj_uid']
             server = PassWord.objects.get(uid=int(uid))  # 获取服务器信息
             obj = Object.objects.get(uid=int(obj_uid))  # 获取项目日志路径
             self.t = paramiko.Transport((server.ip, server.port))
