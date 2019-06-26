@@ -259,7 +259,7 @@
             $("[placeholder='Search']").attr("AUTOCOMPLETE", "off");
             $("[aria-label='columns']").attr("style", "padding:6px;");
             {% if auth == 1 %}
-                $("[aria-label='columns']").before("<button onclick=\"location.href='add/'\" class=\"btn btn-default\" style=\"padding:6px 6px;border-top-right-" +
+                $("[aria-label='columns']").before("<button onclick=\"location.href='/add/'\" class=\"btn btn-default\" style=\"padding:6px 6px;border-top-right-" +
                     "radius:0px;border-bottom-right-radius:0px\" ><i class=\"\glyphicon glyphicon-plus\t\"></i>添加服务器</button>");
                 $("[aria-label='columns']").before("<button data-toggle=\"modal\" data-target=\"#pModal\" class=\"btn btn-default\" style=\"padding:6px 6px;border-top-right-" +
                     "radius:0px;border-bottom-right-radius:0px\" ><i class=\"\tglyphicon glyphicon-pencil\"></i>批量修改</button>");
