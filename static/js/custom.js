@@ -492,6 +492,12 @@ function Upfile(id, input, status, text, pd) {
         });
     }
 
+    function getFileName(file) {//通过第二种方式获取文件名
+        var arr = file.split('\\');//通过\分隔字符串，成字符串数组
+        return arr[arr.length - 1];//取最后一个，就是文件名
+    }
+
+
     //进度条
     function progressHandlingFunction(e) {
         progressbar.show();
@@ -500,6 +506,8 @@ function Upfile(id, input, status, text, pd) {
         let process = curr / total * 100;
         if (process === 100) {
             progressbar.text('文件已上传到代理服务器,正在上传到目标服务器...');
+            let fileName = getFileName(file_input.val());
+            ProxyProgressLog(fileName)
         } else {
             progressbar.text('当前文件上传进度: ' + parseInt(process) + '%');
         }
@@ -553,6 +561,32 @@ function ProjectDep() {
             $("#log").text("上传失败,请检查网络或者服务器配置");
         }
     });
+}
+
+//代理服务器上传进度
+function ProxyProgressLog(filename) {
+    if ("WebSocket" in window) {
+        // 打开一个 web socket
+        // var host = window.location.host;
+        var ws = new WebSocket("ws://" + location.hostname + ':' + 8001 + "/proxyprogresslog/");
+        ws.onopen = function () {
+            // Web Socket 已连接上，使用 send() 方法发送数据
+            let message = {'filename': filename};
+            let messages = JSON.stringify(message);
+            ws.send(messages)
+        };
+        ws.onmessage = function (evt) {
+            var received_msg = evt.data;
+            $('#log').val('文件从到代理服务器-->>目标服务器'+received_msg);
+        };
+        ws.onclose = function () {
+            // 关闭 websocket
+            console.log("连接已关闭...");
+        };
+    } else {
+        // 浏览器不支持 WebSocket
+        alert("您的浏览器不支持 WebSocket!");
+    }
 }
 
 //文件上传
