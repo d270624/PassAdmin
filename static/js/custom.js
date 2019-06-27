@@ -439,7 +439,7 @@ function Upfile(id, input, status, text, pd) {
     let file_input = $("#" + input + ""); //文件输入框
     let log_out = $("#" + status + ""); //结果日志输出
     let uid = $("#" + id + ""); //服务器uid
-    log_out.text("");
+    log_out.val("");
     if (pd === 1) {
         var progressbar = log_out; //进度条
     } else {
