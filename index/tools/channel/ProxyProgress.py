@@ -1,7 +1,10 @@
 from channels.generic.websocket import WebsocketConsumer
 import json
-from index.tools.channel.Process_global import *
+import logging
 import time
+import os
+
+mylog = logging.getLogger('django.server')
 
 
 class logs(WebsocketConsumer):
@@ -11,17 +14,24 @@ class logs(WebsocketConsumer):
     def disconnect(self, close_code):
         self.close()
 
-    def receive(self, text_data=None, bytes_data=None):  # 每次都执行接收网页发过来的json数据
+    def receive(self, text_data=None, bytes_data=None):  # 姣忔閮芥墽琛屾帴鏀剁綉椤靛彂杩囨潵鐨刯son鏁版嵁
         data = json.loads(text_data)
         filename = data.get('filename')
-        while 1:
-            Process = ProcessStatus.get(filename)
-            if Process is None:
-                continue
-            if '100.00%' in Process:
-                self.send(text_data=Process)
-                ProcessStatus[filename] = ''
-                break
-            self.send(text_data=Process)
-            time.sleep(0.1)
+        mylog.info("4444")
+        with open("log/" + filename + '.txt') as file_:
+            # Go to the end of file
+            file_.seek(0, 2)
+            while True:
+                mylog.info("444566")
+                curr_position = file_.tell()
+                line = file_.readline()
+                if not line:
+                    file_.seek(curr_position)
+                else:
+                    mylog.info(line)
+                    self.send(text_data=line)
+                    if '100' in line:
+                        self.send(text_data='success')
+                        os.remove('log/' + filename + '.txt')
+                        break
         self.close()

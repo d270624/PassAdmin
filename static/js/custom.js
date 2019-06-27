@@ -439,6 +439,7 @@ function Upfile(id, input, status, text, pd) {
     let file_input = $("#" + input + ""); //文件输入框
     let log_out = $("#" + status + ""); //结果日志输出
     let uid = $("#" + id + ""); //服务器uid
+    log_out.text("");
     if (pd === 1) {
         var progressbar = log_out; //进度条
     } else {
@@ -577,7 +578,11 @@ function ProxyProgressLog(filename) {
         };
         ws.onmessage = function (evt) {
             var received_msg = evt.data;
-            $('#log').val('文件从到代理服务器-->>目标服务器'+received_msg);
+            if (received_msg === 'success') {
+                $('#log').val('#### 文件上传成功！开始执行项目部署脚本 ####\n\n');
+            } else {
+                $('#log').val('文件从到代理服务器-->>目标服务器' + received_msg);
+            }
         };
         ws.onclose = function () {
             // 关闭 websocket

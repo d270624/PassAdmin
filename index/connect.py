@@ -7,7 +7,6 @@ from queue import Queue as LinxQueue
 from index.Rsa import *
 import socket
 import logging
-from index.tools.channel.Process_global import *
 
 mylog = logging.getLogger('django.server')
 
@@ -143,7 +142,8 @@ def handeler(ip, user, password, port):
 def upfile(ip, username, password, port, filename):
     def progress_bar(a, b):
         bar = '进度 %3.2f%%\r' % (a * 100 / int(b))
-        ProcessStatus[filename] = bar
+        with open('log/' + filename + '.txt', 'a') as f:
+            f.write(bar)
 
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())

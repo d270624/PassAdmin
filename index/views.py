@@ -16,7 +16,7 @@ from .connect import *
 from .forms import *
 from .serializers import *
 from .publicQueue import *
-import json
+import json,time
 import threading
 
 # 日志
@@ -985,12 +985,12 @@ def job_normal(uid, data, obj_uid):
     pro = Object.objects.get(uid=obj_uid)
     s = job_bash(ip=ip, username=obj.user, password=en.decrypt(obj.password), port=obj.port, cmd=pro.obj_text)
     # 执行完批量语句以后，开始执行日志查看系统
-
+    time.sleep(1)
     if s == "err":
         data['result'] = "server_error"
         return data
     else:
-        data['result'] = "#### 文件上传成功！开始执行项目部署脚本 ####\n\n" + s + "\n####### 【脚本部署完成】 #######"
+        data['result'] = s + "\n####### 【脚本部署完成】 #######"
         return data
 
 
