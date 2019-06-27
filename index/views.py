@@ -985,7 +985,6 @@ def job_normal(uid, data, obj_uid):
     pro = Object.objects.get(uid=obj_uid)
     s = job_bash(ip=ip, username=obj.user, password=en.decrypt(obj.password), port=obj.port, cmd=pro.obj_text)
     # 执行完批量语句以后，开始执行日志查看系统
-    time.sleep(1)
     if s == "err":
         data['result'] = "server_error"
         return data

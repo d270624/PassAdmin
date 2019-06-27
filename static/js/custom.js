@@ -316,6 +316,7 @@ function getFileName(file) {//通过第一种方式获取文件名
 
 //日志控制
 function WebSocketLog(uid, obj_uid) {
+    $('#logs').text('');
     if ("WebSocket" in window) {
         // 打开一个 web socket
         // var host = window.location.host;
@@ -542,18 +543,17 @@ function ProjectDep() {
         processData: false,
         success: function (data) {
             if (data.result === "time_error") {
-                $("#log").text("时间不能为空，请检测设置！");
+                $("#log").append("时间不能为空，请检测设置！");
             } else if (data.result === "que_true") {
-                $("#log").text("已添加计划任务！");
+                $("#log").append("已添加计划任务！");
             } else if (data.result === "file_true") {
-                $("#log").text("文件上传成功！");
+                $("#log").append("文件上传成功！");
             } else if (data.result === "file_false") {
-                $("#log").text("文件上传失败！");
+                $("#log").append("文件上传失败！");
             } else if (data.result === "sradio5erver_error") {
-                $("#log").text("服务器错误！");
+                $("#log").append("服务器错误！");
             } else {
-                $("#log").text(data.result);
-
+                $("#log").append(data.result);
                 WebSocketLog(uid, obj_uid);
             }
         },
@@ -578,9 +578,9 @@ function ProxyProgressLog(filename) {
         ws.onmessage = function (evt) {
             var received_msg = evt.data;
             if (received_msg === 'success') {
-                $('#log').val('#### 文件上传成功！开始执行项目部署脚本 ####\n\n');
+                $('#log').text('#### 文件上传成功！开始执行项目部署脚本 ####\n\n');
             } else {
-                $('#log').val('文件从到代理服务器-->>目标服务器' + received_msg);
+                $('#log').text('文件从到代理服务器-->>目标服务器' + received_msg);
             }
         };
         ws.onclose = function () {
@@ -633,7 +633,7 @@ $(function () {
     let obj_btn = $('#obj_btn');
     obj_btn.click(function () {
         if (confirm("确定要部署吗？，部署前请仔细确认模板是否选择正确")) {
-            Upfile("uid3", "obj_up", "log", "代码文件上传成功！正在执行部署模板...", 1);
+            Upfile("uid3", "obj_up", "log", "代码文件上传成功！正在执行部署模板...\n\n", 1);
         }
     });
 });
