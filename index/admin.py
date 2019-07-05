@@ -24,7 +24,7 @@ class PassWordAdmin(admin.ModelAdmin):
 
 
 class UsersAdmin(admin.ModelAdmin):
-    list_display = ('user', 'password', 'user_group')
+    list_display = ('user', 'password', 'user_group', 'fullName')
 
 
 class supervisorAdmin(admin.ModelAdmin):
