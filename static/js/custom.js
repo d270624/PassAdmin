@@ -320,7 +320,7 @@ function WebSocketLog(uid, obj_uid) {
     if ("WebSocket" in window) {
         // 打开一个 web socket
         // var host = window.location.host;
-        var ws = new WebSocket("ws://" + location.hostname + ':' + 8001 + "/logs/");
+        var ws = new WebSocket("ws://" + location.hostname + ':' + 8000 + "/logs/");
         ws.onopen = function () {
             // Web Socket 已连接上，使用 send() 方法发送数据
             let message = {'uid': uid, 'obj_uid': obj_uid};
@@ -475,7 +475,7 @@ function Upfile(id, input, status, text, pd) {
                     }
                     log_out.text(text);
                     if (pd === 1) {
-                        ProjectDep();
+                        ProjectDep(getFileName(file_input.val()));
                     }
 
                 }
@@ -516,7 +516,7 @@ function Upfile(id, input, status, text, pd) {
 }
 
 //部署执行
-function ProjectDep() {
+function ProjectDep(filename) {
     // 如果文件上传成功，则执行部署项目的代码
     let time = $('#time');
     let obj_time = time.val();
@@ -534,6 +534,7 @@ function ProjectDep() {
     formData.append("uid", uid);
     formData.append("qname", qname);
     formData.append("obj_uid", obj_uid);
+    formData.append('filename', filename);
     $.ajax({
         url: "/obj_hander/",
         type: "POST",
@@ -568,7 +569,7 @@ function ProxyProgressLog(filename) {
     if ("WebSocket" in window) {
         // 打开一个 web socket
         // var host = window.location.host;
-        var ws = new WebSocket("ws://" + location.hostname + ':' + 8001 + "/proxyprogresslog/");
+        var ws = new WebSocket("ws://" + location.hostname + ':' + 8000 + "/proxyprogresslog/");
         ws.onopen = function () {
             // Web Socket 已连接上，使用 send() 方法发送数据
             let message = {'filename': filename};

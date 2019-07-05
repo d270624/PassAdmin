@@ -16,7 +16,7 @@ from .connect import *
 from .forms import *
 from .serializers import *
 from .publicQueue import *
-import json,time
+import json, time
 import threading
 
 # 日志
@@ -925,6 +925,17 @@ def obj_hander(request):
             time_status = request.POST.get('time_status')
             obj_time = request.POST.get('obj_time')
             qname = request.POST.get('qname')
+            filename = request.POST.get('filename')
+            # 添加更新记录功能
+            pro = Object.objects.get(uid=obj_uid)
+            dic = {
+                'user': sess,
+                'filename': filename,
+                'projectname': pro.obj_name
+            }
+            ret = ProjectDeploymentRecord(**dic)
+            ret.save()
+
             if time_status == "1":  # 如果等于1就执行定时任务
                 if obj_time == '':
                     data['result'] = "time_error"

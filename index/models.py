@@ -243,3 +243,18 @@ class supervisor(models.Model):
     class Meta:
         verbose_name = "supervisor"  # 定义该实体类在 admin 中显示的名字(单数形式)
         verbose_name_plural = verbose_name
+
+
+class ProjectDeploymentRecord(models.Model):
+    def __str__(self):
+        return self.datetime
+
+    id = models.AutoField(primary_key=True)
+    user = models.CharField(max_length=30, verbose_name='操作人员')
+    filename = models.CharField(max_length=30, verbose_name='部署文件名')
+    datetime = models.DateTimeField(auto_now=True)
+    projectname = models.CharField(max_length=30, verbose_name='项目名称')
+
+    class Meta:
+        verbose_name = "项目部署记录"  # 定义该实体类在 admin 中显示的名字(单数形式)
+        verbose_name_plural = verbose_name
