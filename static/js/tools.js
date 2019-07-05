@@ -59,3 +59,73 @@ $('#js_convert_datetime').click(function () {
         $('#js_timestamp_o').val(time);
     }
 });
+
+$('#projectRecord').on('show.bs.modal', function () {
+    $('#table').bootstrapTable({
+        url: '/getProjectDeploymentRecord/',
+        method: 'GET',
+        contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+        cache: false,   //是否启用 数据缓存
+        sidePagination: 'client',   //谁来分页，客户端：'client'，服务端：'server'
+        pageNumber: 1,   //默认显示 首页
+        pageSize: 10,     //每页需要显示的数据量
+        queryParamsType: 'limit',
+        pagination: true,
+        singleSelect: false,
+        clickToSelect: true,
+        sortName: "create_time",
+        sortOrder: "desc",
+        pageList: "[10, 25, 50, 100, All]",
+        search: true,
+        columns: [{
+            field: 'user',
+            title: '用户名',
+            switchable: true,
+            sortable: true,
+            align: 'center',
+            valign: 'middle',
+            width: 100,
+        }, {
+            field: 'servername',
+            title: '服务器名',
+            width: 150,
+            switchable: true,
+            sortable: true,
+            align: 'center',
+            valign: 'middle',
+        }, {
+            field: 'projectname',
+            title: '项目名',
+            switchable: true,
+            sortable: true,
+            align: 'center',
+            valign: 'middle',
+            width: 150,
+        }, {
+            field: 'filename',
+            title: '文件名',
+            switchable: true,
+            sortable: true,
+            align: 'center',
+            valign: 'middle',
+            width: 150,
+        }, {
+            field: 'datetime',
+            title: '更新时间',
+            switchable: true,
+            sortable: true,
+            align: 'center',
+            valign: 'middle',
+            width: 150,
+        }],
+        responseHandler: function (data) {
+            return data.rows; //此处用于对结果进行处理，使分类变成字符串显示
+        },
+    });
+});
+
+$('#projectRecord').on('hide.bs.modal', function () {
+    location.reload();
+});
+
+

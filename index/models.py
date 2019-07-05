@@ -247,11 +247,12 @@ class supervisor(models.Model):
 
 class ProjectDeploymentRecord(models.Model):
     def __str__(self):
-        return self.datetime
+        return self.servername
 
     id = models.AutoField(primary_key=True)
     user = models.CharField(max_length=30, verbose_name='操作人员')
     filename = models.CharField(max_length=30, verbose_name='部署文件名')
+    servername = models.CharField(max_length=30, verbose_name='服务器名')
     datetime = models.DateTimeField(auto_now=True)
     projectname = models.CharField(max_length=30, verbose_name='项目名称')
 

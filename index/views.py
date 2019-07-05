@@ -159,7 +159,7 @@ def hostAll(news, sess, n):
     use = Users.objects.get(user=sess)
     rep = use.remark.all()  # 获取备注信息
     sort = {}
-    serializer = Newstagserializer(news, many=True).data
+    serializer = serverListSer(news, many=True).data
     for x in serializer:  # 将结果重新组合，把用户备注添加到json中
         arr = set()
         for i in x['projectName']:
@@ -929,6 +929,7 @@ def obj_hander(request):
             # 添加更新记录功能
             pro = Object.objects.get(uid=obj_uid)
             dic = {
+                'servername': obj.hostname,
                 'user': sess,
                 'filename': filename,
                 'projectname': pro.obj_name
@@ -959,6 +960,19 @@ def obj_hander(request):
                     return JsonResponse(data)
             else:
                 return JsonResponse(job_normal(uid, data, obj_uid))
+        else:
+            return HttpResponseRedirect('/login/')
+    else:
+        return HttpResponseRedirect('/login/')
+
+
+def getProjectDeploymentRecord(request):
+    sess = request.session.get('user')
+    if sess:
+        if judgeUserGroup(sess):
+            pro = ProjectDeploymentRecord.objects.all()
+            serializer = ProjectDeploymentRecordSer(pro, many=True).data
+            return JsonResponse({'rows': serializer})
         else:
             return HttpResponseRedirect('/login/')
     else:
@@ -1027,6 +1041,9 @@ def task_queue_del(request, uid):
         return HttpResponseRedirect('/queue/')
     else:
         return HttpResponseRedirect('/login/')
+
+
+"""小工具"""
 
 
 # 小工具

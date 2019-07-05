@@ -49,5 +49,6 @@ urlpatterns = [
     path('searchSuperConf/', searchSuperConf, name='searchSuperConf'),
     path('saveSuperConf/', saveSuperConf, name='saveSuperConf'),
     path('batch_edit/', batch_edit, name='batch_edit'),
+    path('getProjectDeploymentRecord/', getProjectDeploymentRecord)
 
 ]

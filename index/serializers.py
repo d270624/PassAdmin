@@ -2,7 +2,7 @@ from rest_framework import serializers  # 要用到的包
 from .models import *  # 导入表
 
 
-class Newstagserializer(serializers.ModelSerializer):
+class serverListSer(serializers.ModelSerializer):
     system = serializers.CharField(source='get_system_display')
     group = serializers.CharField()
     project = serializers.SerializerMethodField()
@@ -15,6 +15,14 @@ class Newstagserializer(serializers.ModelSerializer):
 
     class Meta:
         model = PassWord
+        fields = '__all__'
+
+
+class ProjectDeploymentRecordSer(serializers.ModelSerializer):
+    datetime = serializers.DateTimeField(format='%Y-%m-%d %H:%M:%S')
+
+    class Meta:
+        model = ProjectDeploymentRecord
         fields = '__all__'
 
 
