@@ -928,9 +928,10 @@ def obj_hander(request):
             filename = request.POST.get('filename')
             # 添加更新记录功能
             pro = Object.objects.get(uid=obj_uid)
+            usr = Users.objects.get(user=sess)
             dic = {
                 'servername': obj.hostname,
-                'user': sess,
+                'user': usr.fullName,
                 'filename': filename,
                 'projectname': pro.obj_name
             }
