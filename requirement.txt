@@ -15,7 +15,7 @@ channels==2.1.7
 chardet==3.0.4
 constantly==15.1.0
 crypto==1.4.1
-cryptography==2.5
+cryptography==3.2
 daphne==2.2.5
 decorator==4.4.0
 defusedxml==0.6.0
