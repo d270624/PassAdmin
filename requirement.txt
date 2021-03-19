@@ -22,7 +22,7 @@ defusedxml==0.6.0
 Django==2.1.4
 django-cors-headers==2.5.2
 django-simpleui==2.0.4
-djangorestframework==3.9.2
+djangorestframework==3.11.2
 entrypoints==0.3
 future==0.17.1
 hyperlink==18.0.0
